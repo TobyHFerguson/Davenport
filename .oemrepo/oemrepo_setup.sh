@@ -13,9 +13,7 @@ sudo chown -R oracle:oinstall /u01
 
 # Ensure that port 1521 is open
 sudo iptables -I INPUT -p tcp --dport 1521 -m state --state NEW,ESTABLISHED -j ACCEPT
-
-# ensure /etc/hosts is correctly set up
-cat /vagrant/.common/etc_hosts | sudo su -c "grep -v $(hostname)" >>/etc/hosts
+sudo service iptables save
 
 # Unzip the database install files, if not already done
 [ -d /vagrant/database ] || {
