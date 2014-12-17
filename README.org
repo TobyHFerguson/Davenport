@@ -1,0 +1,14 @@
+* Enterprise Manager
+Download Enterprise Manager 12C Release 4 from https://edelivery.oracle.com. The checksums for these specific files will be used to check that they downloaded correctly, so make sure you get exactly these files!
+
+| filename      | description                                                                                 |
+|---------------+---------------------------------------------------------------------------------------------|
+| V45344-01.zip | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk1of3  |
+| V45345-01.zip | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk2of3  |
+| V45346-01     | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk 3of3 |
+* Installation
+Ensure that your database machine (=oemrepo.lab.net=) is up and running.
+
+Execute =vagrant up= and a machine will be installed and provisioned.
+
+It will take /2 hours/ or longer to provision Enterprise Manager.

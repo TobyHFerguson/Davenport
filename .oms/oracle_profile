@@ -1,0 +1,13 @@
+# Location of  middleware software
+export MIDDLEWARE_HOME=/u01/app/oracle/product/12cr4/Middleware
+# Location of oms
+export OMS_HOME=/u01/app/oracle/product/12cr4/Middleware/oms
+
+PATH=${OMS_HOME:?}/bin:$PATH
+
+# JAVA stuff
+export JAVA_HOME=/u01/app/oracle/product/12cr4/Middleware/jdk16/jdk
+PATH=${JAVA_HOME:?}/bin:$PATH
+
+# emcli stuff
+PATH=~/emcli_home:$PATH
