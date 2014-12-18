@@ -1,0 +1,1 @@
+oms_packages=(make binutils gcc libaio glibc-common libstdc++ libXtst sysstat glibc-devel.i686 glibc-devel.x86_64)

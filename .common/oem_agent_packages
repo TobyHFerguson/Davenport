@@ -1,0 +1,1 @@
+oem_agent_packages=(make binutils gcc libaio glibc-common libstdc++ sysstat)
