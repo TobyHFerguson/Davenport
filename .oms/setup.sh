@@ -47,6 +47,7 @@ sudo su -c 'cat /vagrant/.oem/oracle_profile  >>/home/oracle/.bash_profile' - or
 # Create the directories in which the oms and the agent are to be installed.
 sudo su -c "mkdir -p /u01/app/oracle/product/12cr4/Middleware" - oracle
 sudo su -c "mkdir -p /u01/app/oracle/agent12cr4" - oracle
+sudo install -o oracle -g oracle -d /u01/app/oracle/swlib
 sudo chown --recursive oracle:oracle /u01
 
 # Change File Descriptor limits (both hard and soft) to 16384 for oracle user. Needed by WebLogic
