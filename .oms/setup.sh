@@ -33,7 +33,7 @@ sudo yum -q -y install ${packages[*]}
 sudo useradd -U -m oracle
 echo oracle | sudo passwd --stdin oracle
 # configure oracle user's sudo access
-sudo install --mode 440 --owner root --group root /vagrant/.oem/sudo_oracle /etc/sudoers.d
+sudo install --mode 440 --owner root --group root /vagrant/.oms/sudo_oracle /etc/sudoers.d
 # configure sudo so that it can be used by Enterprise Manager
 sudo sed -i -e '/requiretty$/s/^/#/' -e'/visiblepw$/s/!//'  /etc/sudoers
 # Create the oracle software directory
@@ -42,7 +42,7 @@ sudo install -o oracle -g oracle -d /u01
 sudo cp --recursive ~vagrant/.ssh ~oracle
 sudo chown --recursive oracle:oracle ~oracle
 # Configure oracle's environment
-sudo su -c 'cat /vagrant/.oem/oracle_profile  >>/home/oracle/.bash_profile' - oracle
+sudo su -c 'cat /vagrant/.oms/oracle_profile  >>/home/oracle/.bash_profile' - oracle
 
 # Create the directories in which the oms and the agent are to be installed.
 sudo su -c "mkdir -p /u01/app/oracle/product/12cr4/Middleware" - oracle
@@ -69,7 +69,7 @@ EOF
 }
 
 # Install the OEM software
-sudo su -c '/vagrant/oem_install/runInstaller -silent -waitforcompletion -responsefile /vagrant/.oem/oem.rsp' - oracle
+sudo su -c '/vagrant/oem_install/runInstaller -silent -waitforcompletion -responsefile /vagrant/.oms/oem.rsp' - oracle
 
 #Execute the root scripts
 sudo /u01/app/oraInventory/orainstRoot.sh
