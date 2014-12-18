@@ -73,6 +73,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     y.vm.box = "ol6minimal"
     y.vm.hostname = "yum.lab.net"
     y.vm.network "private_network", ip: "192.168.50.8"
+    y.vm.provision "update", type: "shell", inline: "sudo yum -y update"
+    y.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    y.vm.provision "yum_service", type: "shell", path: ".yum/setup.sh" 
   end
 
 end
