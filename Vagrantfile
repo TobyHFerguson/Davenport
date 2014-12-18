@@ -7,15 +7,15 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.enabled = true
   config.hostmanager.include_offline = true # Add up boxes or boxes with private network to 
-
+  
   # DHCP
   config.vm.define "dhcp" do |d|
     d.vm.box = "ol6minimal"
     d.vm.hostname="dhcp.lab.net"
     d.vm.network "private_network", ip: "192.168.50.3"
-    d.vm.provision "oracle_user", type: "shell", path: ".common/provision_oracle_user.sh", privileged: false
-    d.vm.provision "dhcp", type: "shell", path: ".dhcp/setup.sh", privileged: false
-
+    d.vm.provision "update", type: "shell", inline: "sudo yum -y update"
+    d.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    d.vm.provision "dhcp_service", type: "shell", path: ".dhcp/setup.sh", privileged: false
   end
 
   # OEMREPO
@@ -53,6 +53,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     s.vm.box = "ol6minimal"
     s.vm.hostname = "stage.lab.net"
     s.vm.network "private_network", ip: "192.168.50.6"
+    s.vm.provision "update", type: "shell", inline: "sudo yum -y update"
+    s.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    s.vm.provision "stage_service", type: "shell", path: ".stage/setup.sh"
   end
 
   # TFTP
