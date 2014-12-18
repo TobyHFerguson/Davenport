@@ -63,6 +63,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     t.vm.box = "ol6minimal"
     t.vm.hostname = "tftp.lab.net"
     t.vm.network "private_network", ip: "192.168.50.7"
+    t.vm.provision "update", type: "shell", inline: "sudo yum -y update"
+    t.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    t.vm.provision "tftp_service", type: "shell", path: ".tftp/setup.sh"    
   end
 
   # YUM
