@@ -41,7 +41,7 @@ UNIX_GROUP_NAME="oracle"
 #Example: FROM_LOCATION = "../stage/products.xml"
 #-------------------------------------------------------------------------------
 #FROM_LOCATION="/sw_install_dir/Oracle_software//stage/../oms/Disk1/stage/products.xml"
-FROM_LOCATION="/vagrant/oem_install/oms/Disk1/stage/products.xml"
+FROM_LOCATION="/vagrant/oms_install/oms/Disk1/stage/products.xml"
 
 #-------------------------------------------------------------------------------
 #Name       : FROM_LOCATION_CD_LABEL

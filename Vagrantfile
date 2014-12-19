@@ -23,7 +23,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     db.vm.box = "ol6minimal"
     db.vm.hostname = "oemrepo.lab.net"
     db.vm.network "private_network", ip: "192.168.50.4"
-    db.vm.provision "shell", path: ".oemrepo/oemrepo_setup.sh", privileged: false
+    db.vm.provision "update", type: "shell", inline: "sudo yum -y update"
+    db.vm.provision "db_service", type: "shell", path: ".oemrepo/oemrepo_setup.sh", privileged: false
     # OMS requires that the DB have plenty of RAM for performance reasons. I'll give it 2G and see how we do!
     db.vm.provider "virtualbox" do |v|
       v.memory = 2048
@@ -44,8 +45,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.memory = 3584
     end
 
-    oms.vm.provision "shell", path: ".oms/setup.sh", privileged: false
+    oms.vm.provision "oms_service", type: "shell", path: ".oms/setup.sh", privileged: false
     oms.vm.provision "make_agent", type: "shell", path: ".oms/generate_agent.sh", privileged: false
+    oms.vm.provision "start_oms", type: "shell", inline: "service gcstartup start", run: "always"
   end
 
   # STAGE

@@ -57,19 +57,19 @@ sudo su -c 'echo -e "oracle\t-\tnofile\t16384" >>/etc/security/limits.conf' - ro
 sudo iptables -I  INPUT -m state --state NEW -p tcp --dport 7802 -j ACCEPT
 sudo service iptables save
 
-# Check that the oem_install directory exists. Exit if it doesn't
-[ -d /vagrant/oem_install ] || {
+# Check that the oms_install directory exists. Exit if it doesn't
+[ -d /vagrant/oms_install ] || {
     cat - 1>&2 <<EOF
-Can't find the directory "oem_install" in the current directory. 
-Please unzip the OEM Installation Zip files into "oem_install", like this:
-unzip -u -d oem_install /path/to/V45344-01.zip
-unzip -u -d oem_install /path/to/V45345-01.zip
-unzip -u -d oem_install /path/to/V45346-01.zip
+Can't find the directory "oms_install" in the current directory. 
+Please unzip the OEM Installation Zip files into "oms_install", like this:
+unzip -u -d oms_install /path/to/V45344-01.zip
+unzip -u -d oms_install /path/to/V45345-01.zip
+unzip -u -d oms_install /path/to/V45346-01.zip
 EOF
 }
 
 # Install the OEM software
-sudo su -c '/vagrant/oem_install/runInstaller -silent -waitforcompletion -responsefile /vagrant/.oms/oem.rsp' - oracle
+sudo su -c '/vagrant/oms_install/runInstaller -silent -waitforcompletion -responsefile /vagrant/.oms/oem.rsp' - oracle
 
 #Execute the root scripts
 sudo /u01/app/oraInventory/orainstRoot.sh
@@ -82,7 +82,7 @@ echo "Read oem_setupinfo.txt to find out how to connect to oem"
 
 # Install emcli locally
 sudo su -c 'mkdir ~/emcli_home' - oracle
-curl --insecure https://localhost:7802/em/public_lib_download/emcli/kit/emclikit.jar >/tmp/emclikit.jar
+curl --silent --insecure https://localhost:7802/em/public_lib_download/emcli/kit/emclikit.jar >/tmp/emclikit.jar
 sudo su -c 'java -jar -jar /tmp/emclikit.jar -install_dir=/home/oracle/emcli_home' - oracle
 sudo su -c 'emcli setup -url=https://localhost:7802/em -username=sysman -password=Welcome1 -trustall -autologin' - oracle
 

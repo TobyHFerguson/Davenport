@@ -1,6 +1,4 @@
 #!/bin/bash
-# Update the OS
-sudo yum -y -q update
 # Add the prereqs
 sudo yum -y -q install unzip oracle-rdbms-server-11gR2-preinstall
 # Construct the needed oracle environment
@@ -16,13 +14,13 @@ sudo iptables -I INPUT -p tcp --dport 1521 -m state --state NEW,ESTABLISHED -j A
 sudo service iptables save
 
 # Unzip the database install files, if not already done
-[ -d /vagrant/database ] || {
+[ -d /vagrant/db_install ] || {
 unzip -u -d /vagrant /vagrant/p10404530_112030_Linux-x86-64_1of7.zip
 unzip -u -d /vagrant /vagrant/p10404530_112030_Linux-x86-64_2of7.zip
 }
 
 # Install the db
-sudo su -c "/vagrant/database/runInstaller -silent -ignorePrereq -responseFile /vagrant/.oemrepo/db.rsp -waitforcompletion" - oracle
+sudo su -c "/vagrant/db_install/runInstaller -silent -ignorePrereq -responseFile /vagrant/.oemrepo/db.rsp -waitforcompletion" - oracle
 
 # Execute the root scripts
 sudo /u01/app/oraInventory/orainstRoot.sh
