@@ -89,7 +89,7 @@ sudo su -c 'java -jar -jar /tmp/emclikit.jar -install_dir=/home/oracle/emcli_hom
 sudo su -c 'emcli setup -url=https://localhost:7802/em -username=sysman -password=Welcome1 -trustall -autologin' - oracle
 
 # Create the named credentials ORACLE_NC and ROOT_NC
-sudo su -c 'emcli create_named_credential -cred_name=ROOT_NC -auth_target_type=host -cred_type=HostCreds -attributes="HostUserName:root;HostPassword:oracle"' - oracle 
+sudo su -c 'emcli create_named_credential -cred_name=ROOT_NC -auth_target_type=host -cred_type=HostCreds -attributes="HostUserName:root;HostPassword:vagrant"' - oracle 
 sudo su -c 'emcli create_named_credential -cred_name=ORACLE_NC -auth_target_type=host -cred_type=HostCreds -attributes="HostUserName:oracle;HostPassword:oracle"' - oracle 
 
 # Assign the named credentials to the appropriate default credential sets
