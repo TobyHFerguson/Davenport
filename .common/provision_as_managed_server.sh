@@ -2,7 +2,7 @@
 # Packages which are required for agentpull.sh
 EXTRA_PKGS=(zip unzip bc)
 PKGS=(oracle-em-agent-12cR4-preinstall ${EXTRA_PKGS[*]})
-rpm --quiet -q ${PKGS[*]} || yum  -y --disablerepo='*' --enablerepo=ol6_addons,ol6_latest install ${PKGS[*]}
+rpm --quiet -q ${PKGS[*]} || yum  -q -y --disablerepo='*' --enablerepo=ol6_addons,ol6_latest install ${PKGS[*]}
 [ -f /u01/agent12cR4/core/12.1.0.4.0/root.sh ] || {
     echo 'Installing Agent - this will take about 5 minutes'
     install --owner oracle --group oinstall -d /u01
