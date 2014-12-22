@@ -1,6 +1,9 @@
 #!/bin/bash
 # Yum requires httpd
-yum -q -y install httpd
+yum -q -y --disablerepo='*' --enablerepo=ol6_latest install httpd
+
+# Setup the httpd conf file properly
+sed -i 's/^#ServerName.*80/ServerName yum.lab.net:80/' /etc/httpd/conf/httpd.conf
 
 service httpd start
 chkconfig httpd on
@@ -13,7 +16,7 @@ readonly ISO_IMAGE_DIR=/media/ol6
 # Update the /etc/fstab if necessary and mount the iso image
 mkdir -p ${ISO_IMAGE_DIR:?}
  grep -q ${ISO:?} /etc/fstab || {
-     echo -e "${ISO:?}\t${ISO_IMAGE_DIR:?}\tauto\tdefaults\t0 0\n" >>/etc/fstab
+     echo -e "${ISO:?}\t${ISO_IMAGE_DIR:?}\tauto\tro\t0 0\n" >>/etc/fstab
      mount -a
      }
 # Expose the iso image directory via the web
