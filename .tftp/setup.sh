@@ -2,12 +2,12 @@
 
 # Install tftp service specific packages
 
-yum -y install tftp-server syslinux-tftpboot
+yum -q -y --disablerepo='*' --enablerepo=ol6_latest install tftp-server syslinux-tftpboot
 
 # Unfortunately the above two packages don't agree on where the tftpdir should live
 # Bind mount them to one location!
 # Ensure /tfptboot is owned by oracle, thus allowing a less privileged user to perform BMP
-install --owner oracle --group oracle -d /tftpboot
+install --owner oracle --group oinstall -d /tftpboot
 # ensure that the selinux context is set correctly
 restorecon -R /tftpboot/
 
