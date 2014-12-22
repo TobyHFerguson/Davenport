@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
    # Update the public-yum-ol6.repo file to the latest one
    config.vm.provision "update_repo_file", type: "shell", inline: "curl --silent http://public-yum.oracle.com/public-yum-ol6.repo >/etc/yum.repos.d/public-yum-ol6.repo"
    # Update the OS
-   config.vm.provision "yum_update", type: "shell", path: "yum -q -y update"
+   config.vm.provision "yum_update", type: "shell", inline: "yum -q -y update"
   
    # DHCP
   config.vm.define "dhcp" do |d|
