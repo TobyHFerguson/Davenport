@@ -54,8 +54,10 @@ sudo chown --recursive oracle:oracle /u01
 sudo su -c 'echo -e "oracle\t-\tnofile\t16384" >>/etc/security/limits.conf' - root
 
 # setup firewall so we can access the OMS remotely
-sudo iptables -I  INPUT -m state --state NEW -p tcp --dport 7802 -j ACCEPT
-sudo service iptables save
+sudo iptables -L INPUT -n | grep -q 7802  || {
+    sudo iptables -I  INPUT -m state --state NEW -p tcp --dport 7802 -j ACCEPT
+    sudo service iptables save
+    }
 
 # Check that the oms_install directory exists. Exit if it doesn't
 [ -d /vagrant/oms_install ] || {
@@ -94,3 +96,7 @@ sudo su -c 'emcli create_named_credential -cred_name=ORACLE_NC -auth_target_type
 sudo su -c 'emcli set_default_pref_cred -set_name="HostCredsNormal" -target_type=host -credential_name=ORACLE_NC'  - oracle
 sudo su -c 'emcli set_default_pref_cred -set_name="HostCredsPriv" -target_type=host -credential_name=ROOT_NC'  - oracle
 sudo su -c 'emcli set_default_pref_cred -set_name="HostCreds" -target_type=oracle_emd -credential_name=ORACLE_NC'  - oracle 
+
+# Turn off security until I can figure out which ports are required
+sudo service iptables stop
+sudo chkconfig iptables off

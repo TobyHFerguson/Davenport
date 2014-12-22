@@ -11,8 +11,10 @@ install --owner oracle --group oracle -d /tftpboot
 # ensure that the selinux context is set correctly
 restorecon -R /tftpboot/
 
-echo "/tftpboot /var/lib/tftpboot none bind" >>/etc/fstab
-mount -a
+grep -q tftpboot /etc/fstab || {
+    echo "/var/lib/tftpboot /tftpboot none bind" >>/etc/fstab
+    mount -a
+    }
 
 # enable tftp launch from xinetd
 sed -i '/disable/s/yes/no/' /etc/xinetd.d/tftp
