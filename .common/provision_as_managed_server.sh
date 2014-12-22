@@ -20,3 +20,5 @@ iptables -L INPUT -n | grep --silent 3872 || {
 
 
 
+# ensure password for oracle is 'oracle'
+echo oracle | passwd --stdin oracle
