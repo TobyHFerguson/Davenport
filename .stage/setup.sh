@@ -3,7 +3,7 @@ yum -q -y install wget rpcbind nfs-utils
 
 # Expose stage directory via nfs
 export STAGE_DIR=/stage
-install --owner oracle --group oracle -d ${STAGE_DIR:?}
+install --owner oracle --group oinstall -d ${STAGE_DIR:?}
 echo "${STAGE_DIR:?} *(ro,sync)" >>/etc/exports
 
 # Ensure services are running and will run after a reboot
