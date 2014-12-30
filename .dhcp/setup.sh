@@ -4,6 +4,10 @@ rpm --quiet -q dnsmasq || sudo yum -q -y install dnsmasq
 
 # Copy in the configuration file
 sudo cp -f /vagrant/.dhcp/dnsmasq.conf /etc/dnsmasq.conf
+
+# Ensure /etc/hosts has the correct SELINUX context
+restorecon /etc/hosts
+
 # Take care of dnsmasq as a service
 sudo chkconfig dnsmasq on
 sudo service dnsmasq start
