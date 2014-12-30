@@ -1,14 +1,104 @@
-* Enterprise Manager
-Download Enterprise Manager 12C Release 4 from https://edelivery.oracle.com. The checksums for these specific files will be used to check that they downloaded correctly, so make sure you get exactly these files!
+#+TITLE: Project Davenport
+* Overview
+This project provides a 'one button' installation of a complete virtualized environment for demonstrating Oracle Enterprise Manager 12c's Bare Metal Provisioning capability
 
-| filename      | description                                                                                 |
-|---------------+---------------------------------------------------------------------------------------------|
-| V45344-01.zip | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk1of3  |
-| V45345-01.zip | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk2of3  |
-| V45346-01     | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk 3of3 |
-* Installation
-Ensure that your database machine (=oemrepo.lab.net=) is up and running.
+The system will install Oracle Linux (you supply the iso), along with Oracle 11g Database (you download and expand the zip files), and Oracle Enterprise Manager 12C (you download and expand the zip files). The database and the Oracle Management Server are installed as separate VMs, as are a dhcp server, staging server, tftp server and yum server. 
 
-Execute =vagrant up= and a machine will be installed and provisioned.
+The install process takes about 4 hours.
 
-It will take /2 hours/ or longer to provision Enterprise Manager.
+You will then be able to access Oracle Enterprise Manager on the host machine on port 17802.
+
+The use of Oracle Enterprise Manager is explained in detail in the /Using OEM for Bare Metal Provisioning/ pdf file.
+* Setup
+You need to install Vagrant and VirtualBox on your host machine, and then install the /ol6minimal/ Vagrant box. That is the base level of infrastructure required.
+
+Create the base directory for the system by cloning this git repository:
+#+BEGIN_SRC sh
+git clone https://github.org/tobyhferguson/Davenport
+cd Davenport
+#+END_SRC
+
+This directory /Davenport/ will be the project's home directory. You can call it anything you like. All file references etc. will be relative to this directory. So if I say something like 'unzip the database files into the /db_install/ dir, that directory will be an immediate child directory under /Davenport/. 
+
+Download four software items (each comprising one or more zip files):
++ OL6 :: Latest version of Oracle Linux 6. Opensource and free.
++ DB :: Oracle Database 12C. Requires a license to download and use.
++ OEM :: Oracle Enterprise Manager 12C. Free to download. Use with Oracle Linux requires an Oracle Linux support contract
++ DB Template :: Oracle template for OEM 12C. Free to download.
+
+Detailed instructions are contained below:
+** OL6
+Download any (we recommend the latest) version of Oracle Linux 6 from https://edelivery.oracle.com. We used Oracle Linux 6 Update 5:
+| Name                                                | Part #    |
+|-----------------------------------------------------+-----------|
+| Oracle Linux Release 6 Update 5 for x86_64 (64 Bit) | V41362-01 |
+
+Unzip the downloaded file and save the contained iso image as =OL6.iso= in the project's home directory.
+** DB
+Download Oracle Database 11gR2 from My Oracle Support. Specifically we tested 'Patch 10404530: 11.2.0.3.0 PATCH SET FOR ORACLE DATABASE SERVER'
+
+You don't need all the 7 parts of the database, just parts 1 and 2.
+
+Download =p10404530_112030_Linux-x86-64_1of7.zip= and =p10404530_112030_Linux-x86-64_2of7.zip= and unzip them into =db_install=
+
+(If you download those zip files into some directory =/Download=, then the following executed in the =Davenport= directory will unzip them into the right place:
+#+BEGIN_SRC sh
+unzip -u -d db_install /Download/p10404530_112030_Linux-x86-64_1of7.zip
+unzip -u -d db_install /Download/p10404530_112030_Linux-x86-64_2of7.zip
+#+END_SRC
+** Enterprise Manager
+Download Enterprise Manager 12C Release 4 from https://edelivery.oracle.com. You'll need the three parts, as listed below, each part will download as a zip file named after its part number:
+
+| Description                                                                                 | Part #    |
+|---------------------------------------------------------------------------------------------+-----------|
+| Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk1of3  | V45344-01 |
+| Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk2of3  | V45345-01 |
+| Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk 3of3 | V45346-01 | 
+
+Unzip /all/ of these files into the =oms_install= directory. Again, if you downloaded the zip files into =/Downloads= then the following executed in the =Davenport= directory will unzip them correctly:
+#+BEGIN_SRC sh
+unzip -u -d oms_install /Download/V45344-01.zip
+unzip -u -d oms_install /Download/V45345-01.zip
+unzip -u -d oms_install /Download/V45346-01.zip
+#+END_SRC
+** DB Template
+We use a DB template to construct the OEM repository. This template ensures that (almost) all the parts are configured and constructed correctly (we do have to apply a patch later on to cope with a partition issue, but that gets applied automatically as part of the provisioning system).
+
+Download the DB template from http://www.oracle.com/technetwork/oem/enterprise-manager/downloads/db-templates-1959276.html. Specifically you'll need the template called '11.2.0.3 DB Template for EM 12.1.0.3 on Linux x86-64'. Download this template as a zip file into the =Davenport= directory. The zip file must be called '11.2.0.3_Database_Template_for_EM12_1_0_4_Linux_x64.zip'. Leave the file in its zipped format - it gets unzipped /inside/ the =oemrepo= vm during database construction.
+
+You'll be setup correctly if your Davenport directory has the following content:
+#+BEGIN_SRC sh
+[toby@dell-server-2 Davenport] ls -l
+total 4252360
+-rw-r--r--.  1 toby toby  219488303 Dec  9 08:34 11.2.0.3_Database_Template_for_EM12_1_0_4_Linux_x64.zip
+drwxr-xr-x.  8 toby toby       4096 Dec 17 10:22 db_install
+-rw-r--r--.  1 toby toby 3885117440 Dec 18 07:46 ol6.iso
+drwxr-xr-x. 11 toby toby       4096 Dec 17 10:13 oms_install
+-rw-r--r--.  1 toby toby       6679 Dec 30 14:05 README.org
+-rw-rw-r--.  1 toby toby       3740 Dec 29 11:05 Vagrantfile
+#+END_SRC
+(There're a bunch of hidden directories too, but they're for "internal" use, so I haven't shown those here)
+* Operation
+** Initial provision
+Assuming vagrant is set up correctly then simply do the following:
+#+BEGIN_SRC sh
+cd Davenport
+vagrant up
+#+END_SRC
+Vagrant will do its magic along with Virtualbox and setup the basic VMs. It will use the contents of the /Vagrantfile/ and the referenced scripts (in those hidden directories mentioned above) to provision each of the VMs with its respective service:
++ oemrepo :: Repository (database) for the Oracle Enterprise Manager
++ oms :: Oracle Management Server, hosting Oracle Enterprise Manager
++ dhcp :: The dhcp service
++ stage :: Staging service for Bare Metal Provisioning (BMP) by the OMS. Holds kickstart files etc.
++ tftp :: Boot server for BMP. Provides PXE linux boot services.
++ yum :: Yum server for BMP. Provides a yum repository containing Oracle Linux 6.
+
+This process takes of the order of 2 to 3 hours (with the bulk of that time being the OMS installation).
+
+All these VMs are "standard" vagrant VMs - the =root= and =vagrant= users have the password 'vagrant'. There is also an 'oracle' user, whose password is 'oracle'. The project directory (=Davenport=) is mounted inside each VM at =/vagrant=. 
+
+The =dhcp=, =stage=, =tftp= & =yum= servers are all managed by the OMS, and so have agents running on them.
+** Test Machine Preparation
+While the provisioning is going on you should make another Virtualbox VM that will be used as the "bare metal' machine to demonstrate Bare Metal Provisioning. The 'createBMP.sh' script will construct a machine for you, and echo out onto =stdout= the MAC address you'll need to use when provisioning onto that machine.
+* Next Steps
+Read the 'Bare Metail Provisioning with Oracle Enterprise Manager' pdf for detailed instructions on how to proceed from here.
