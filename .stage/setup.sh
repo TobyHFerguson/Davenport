@@ -1,10 +1,25 @@
 # Stage service specific operations
 yum -q -y install wget rpcbind nfs-utils
 
+# Update iptables (according to http://mcdee.com.au/tutorial-configure-iptables-for-nfs-server-on-centos-6/)
+
+# Firstly, edit the NFS port definitions file:
+sed -i -e 's/#\(LOCKD_.*\)/\1/' -e 's/#\(MOUNTD_PORT.*\)/\1/' /etc/sysconfig/nfs
+
+# Secondly, update the iptables (only iff necessary)
+iptables -L INPUT -n | grep --quiet 111 || {
+    iptables -I INPUT -m state --state NEW -p tcp -m multiport --dport 111,892,2049,32803 -j ACCEPT
+    iptables -I INPUT -m state --state NEW -p udp -m multiport --dport 111,892,2049,32803 -j ACCEPT
+    service iptables save
+    service iptables restart
+    }
+
+
 # Expose stage directory via nfs
 export STAGE_DIR=/stage
 install --owner oracle --group oinstall -d ${STAGE_DIR:?}
 echo "${STAGE_DIR:?} *(ro,sync)" >>/etc/exports
+
 
 # Ensure services are running and will run after a reboot
 service rpcbind start
