@@ -8,9 +8,12 @@ sudo cp -f /vagrant/.dhcp/dnsmasq.conf /etc/dnsmasq.conf
 sudo chkconfig dnsmasq on
 sudo service dnsmasq start
 
-# Update iptables so that the service can be accessed on port 67
+# Update iptables so that the bootps service can be accessed on port 67
+# and the DNS service on port 53 (default ports for each)
+
 # Update iptables iff they need to be updated
-sudo iptables -L INPUT | grep 'dpt:67' || {
-    sudo iptables -I INPUT -i eth1 -p udp --dport 67 -j ACCEPT
+sudo iptables -L INPUT | grep 'dpt:bootps' || {
+    sudo iptables -I INPUT -i eth1 -p udp --dport bootps -j ACCEPT
+    sudo iptables -I INPUT -i eth1 -p udp --dport domain -j ACCEPT
     sudo service iptables save
     }
