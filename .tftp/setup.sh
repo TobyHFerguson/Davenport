@@ -1,20 +1,26 @@
 #!/bin/bash
 
 # Install tftp service specific packages
+# tftp-server installs a tftp server attached to xinetd, serving files out of /var/lib/tftpboot
+# syslinux-tftpboot provides all the syslinux files (such as pxelinux.0) that implement PXE
 
-yum -q -y --disablerepo='*' --enablerepo=ol6_latest install tftp-server syslinux-tftpboot
+rpm --quiet -q tftp-server syslinux-tftpboot || yum -q -y --disablerepo='*' --enablerepo=ol6_latest install tftp-server syslinux-tftpboot
 
-# Unfortunately the above two packages don't agree on where the tftpdir should live
-# Bind mount them to one location!
-# Ensure /tfptboot is owned by oracle, thus allowing a less privileged user to perform BMP
-install --owner oracle --group oinstall -d /tftpboot
-# ensure that the selinux context is set correctly
-restorecon -R /tftpboot/
+# We want to enable the 'oracle' user to be able to provision to the boot server
+# Thus we change the ownership of the /var/lib/tftpboot dir and its contents
+
+chown --recursive oracle:oinstall /var/lib/tftpboot
+
+# We want to be able to use /tftpboot as the location of the directory
+# so we create that directory, update /etc/fstab to bind mount it as necessary
+mkdir -p /tftpboot
 
 grep -q tftpboot /etc/fstab || {
     echo "/var/lib/tftpboot /tftpboot none bind" >>/etc/fstab
-    mount -a
-    }
+}
+
+# Ensure that the bind mount is performed
+mount -a
 
 # enable tftp launch from xinetd
 sed -i '/disable/s/yes/no/' /etc/xinetd.d/tftp
@@ -25,9 +31,11 @@ sed -i '/disable/s/yes/no/' /etc/xinetd.d/tftp
 sed -i 's/IPTABLES_MODULES=""/IPTABLES_MODULES="ip_conntrack_tftp"/' /etc/sysconfig/iptables-config
 
 # Secondly, add rules to iptables and restart
-iptables -I INPUT -p udp --dport 69 -s 192.168.50.0/24 -j ACCEPT
-service iptables save
-service iptables restart
+iptables -L INPUT -n | grep --quiet dpt:69 || {
+    iptables -I INPUT -p udp --dport 69 -s 192.168.50.0/24 -j ACCEPT
+    service iptables save
+    service iptables restart
+    }
 
 
 # Ensure xinetd is running, and after reboot
