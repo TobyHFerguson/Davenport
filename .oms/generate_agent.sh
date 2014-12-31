@@ -11,8 +11,10 @@ install --owner oracle -d ${DEST_DIR:?}
 usermod -a -G vagrant oracle
 
 if [ -f ${DEST_DIR:?}/${AGENT_RPM:?} ] # does final RPM exist?
-then				       # yes - do nothing
-elif [ -f ${SRC_DIR:?}/${AGENT_RPM:?} ] # no - is there an internal copy?
+then
+    :				       # yes - do nothing
+else
+    if [ -f ${SRC_DIR:?}/${AGENT_RPM:?} ] # no - is there an internal copy?
     then				# yes - then copy it to the destination directory
 	cp ${SRC_DIR:?}/${AGENT_RPM:?} ${DEST_DIR:?}/${AGENT_RPM:?}
     else			# no - generate the rpm into the destination directory
