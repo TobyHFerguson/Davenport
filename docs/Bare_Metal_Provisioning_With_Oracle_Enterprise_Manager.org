@@ -190,7 +190,7 @@ Add a Stage Server by selecting the appropriate 'Add' button to open up the 'Add
 [[./images/Server_Add_1.png]]
 #+LATEX: \clearpage
 
-Select the stage server by clicking on the magnifying glass on the right and then using the Select Targets wizard:
+Select the stage server by clicking on the magnifying glass on the right and then using the Select Targets wizard[fn:1: Alternatively, for the Stage Directory property, by selecting the magnifying glass on the 'Stage Directory' line you can open up the 'Remote File Browser' and thus select the directory using a wizard]:
 #+CAPTION: Stage Server Selection
 [[./images/Stage_server_selection.png]]
 #+LATEX: \clearpage
@@ -203,8 +203,6 @@ This will bring you back to the 'Add Stage Server' wizard. Add the next two prop
 | Base URL        | file://stage.lab.net/stage |
 
 It is very important to get these values correct. Be careful and check your work. A failure to get these values correct isn't easy to figure out later!
-
-(Alternatively, for the Stage Directory property, by selecting the magnifying glass on the 'Stage Directory' line you can open up the 'Remote File Browser' to select the directory using a wizard)
 
 Add a Boot server similarly. The property values required are:
 
