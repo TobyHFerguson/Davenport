@@ -42,9 +42,118 @@ Select the preferences for you (if any), and then OK. Your preferences are now s
  [[file:images/OEM_Change_Accessibility.png]]
 #+LaTeX: \clearpage
 ** Software Library
+Bare Metal Provisioning, when run using the GUI (it can be run using the command line too), requires that at least two components be setup in the Software Library. These two components are an Operating System Component, and a Disk Component. These components will be referenced later during specific executions of BMP.
+
+Use menu option Enterprise -> Provisioning and Patching -> Software Library to access the Software library:
+#+CAPTION: OEM Software Library Access
+[[file:images/OEM_Software_Library_Access.png]]
+
+This will take you to the Software Library
+#+CAPTION: OEM Software Library
+[[./images/Software_Library_1.png]]
+
 
 *** Operating System Component
+To create an Operating System Component right click on the 'Components' line in the Software Library, and select the 'Create Entity -> Bare Metal Provisioning' menu option:
+#+CAPTION: Bare Metal Provisioning Menu Option
+[[./images/Software_Library_BMP_Menu.png]]
+
+This will provide a Create Entity pop-up showing the 'Operating System' to be created:
+#+CAPTION: Create Entity (Operating System) pop-up
+[[./images/Create_Entity_BMP_OS.png]]
+
+Select 'Continue', and you'll be taken to Step 1 (of 4) of the 'Create Operating System' wizard:
+#+CAPTION: Create OS (Step 1)
+[[./images/Create_OS_1.png]]
+
+Provide a name and (optional) description and hit 'Next' to get to Step 2. In Step 2 use the following settings:
+
+| Item                  | Value         |
+|-----------------------+---------------|
+| Timezone              | Suit yourself |
+| Root password         | vagrant       |
+| Confirm Root Password | vagrant       | 
+
+(OEM has already been configured with a Named Credential (ROOT_NC) with this user/password pair)
+
+Then add a an Operating System User by selecting the 'Add' button. Use the following settings:
+
+| Item              | Value    |
+|-------------------+----------|
+| User Name         | oracle   |
+| Password          | oracle   |
+| Confirm Password  | oracle   |
+| Primary Group     | oracle   |
+| Additional Groups | oinstall |
+|                   |          |
+
+(Again, this user/password combination has already been configured as a Named Credential (ORACLE_NC) within OEM)
+#+CAPTION: Create OS (Step 2)
+[[./images/Create_OS_2.png]]
+
+Hit 'OK' and 'Next' to move to Step 3:
+
+#+CAPTION: Create OS (Step 3)
+[[./images/Create_OS_3.png]]
+
+Set the following Enterprise Manager Agent Properties:
+| Item                        | Value    |
+|-----------------------------+----------|
+| Install User                | oracle   |
+| Install Group               | oinstall |
+| Agent Registration Password | Welcome1 |
+
+Change the Package List from =@everything= to =@base= - this will greatly reduce the number of packages installed during BMP, thus speeding the process up.
+
+The screen should look like this:
+#+CAPTION: Create OS (Step 3) With Properties Updated
+[[./images/Create_OS_3_Updated.png]]
+
+Hit 'Next' to get to Step 4 (Review):
+#+CAPTION: Create OS (Step 4)
+[[./images/Create_OS_4.png]]
+
+Review the settings (you can go back and change them if you think you made a mistake). When satisfied hit 'Save and Upload' to save this component into the Software Library. 
+#+CAPTION: Create OS Completed
+[[./images/Create_OS_Completed.png]]
 *** Disk Component
+Create a Disk Component by right clicking on the 'Components' line in the Software Library and selecting the 'Create Entity -> Bare Metal Provisioning' menu option:
+#+CAPTION: Bare Metal Provisioning Menu Option
+[[./images/Software_Library_BMP_Menu.png]]
+
+This will provide a Create Entity pop-up showing the 'Operating System' to be created. Change the selection to 'Disk Layout':
+#+CAPTION: Create Entity (Disk Layout) pop-up
+[[./images/Create_Entity_BMP_DL.png]]
+
+Hit 'Continue' to go to Step 1 (of 3) in the Create Disk Layout wizard.
+#+CAPTION: Create Disk Layout (Step 1)
+[[./images/Create_DL_1.png]]
+
+Provide a name and (optional) description and hit 'Next' to move to Step 2 of the Disk Layout wizard:
+#+CAPTION: Create Disk Layout (Step 2)
+[[./images/Create_DL_2.png]]
+
+Add a Disk Profile by selecting the appropriate 'Add' button, and create a disk named =sda= with a size of 15360 MB (15GB):
+#+CAPTION: Add New Hard Disk Profile
+[[./images/Add_New_Hard_Disk_Profile.png]]
+
+Add three partitions using the 'Add' button under 'Partition Configuration', configured thus:
+
+| Device Name | File System Type | Mount Point | Grow  | Size (MB) |
+|-------------+------------------+-------------+-------+-----------|
+| /dev/sda0   | ext3             | /boot       | false | 200       |
+| /dev/sda1   | swap             | swap        | false | 1024      |
+| /dev/sda2   | ext3             | /           | true  | 1         | 
+#+CAPTION: Partition Configuration
+[[./images/Partition_Configuration.png]]
+
+More complex disk layouts are possible, but for simplicity's sake we'll go with this basic layout. Select 'Next' to move to Step 3 of the Disk Layout wizard. Expanding the 'Configure' subsection will show the configuration that has been completed so far. Review it, go back to make changes if necessary:
+#+CAPTION: Create Disk Layout (Step 3)
+[[./images/Create_DL_3.png]]  
+
+Select 'Save and Upload' to be taken back to the Software Library:
+#+CAPTION: Create Disk Layout Component Completed
+[[./images/Create_DL_Completed.png]]
 ** Bare Metal Provisioning Infrastructure
 ** Snapshot
 * Demo Operation
