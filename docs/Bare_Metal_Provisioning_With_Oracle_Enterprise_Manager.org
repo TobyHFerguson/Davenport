@@ -217,9 +217,9 @@ We won't be using OEM to modify a DHCP server, so we don't configure one (its op
 
 Add an RPM Repository, using the following property values:
 
-| Property        | Value          |
-|-----------------+----------------|
-| Repository Name | OL6 Repository |
+| Property        | Value                  |
+|-----------------+------------------------|
+| Repository Name | OL6 Repository         |
 | Complete URL    | http://yum.lab.net/ol6 |
 
 When this process is completed the infrastructure page (with the 'Stage Server' expanded) should look like this:
@@ -232,4 +232,49 @@ Returning to the 'Deployments' tab will finalize this setup and the previous war
 [[./images/Infra_Complete.png]]
 #+LATEX: \clearpage
 ** Snapshot
+At this point it is good to perform a snapshot. This snapshot provides a recovery point that can be used as the start of all subsequent demos. It is important for an active system such as this to have a stable recovery point, and hence the need to halt all the VMs before taking the snapshot. This will ensure that restoring this recovery point will push all servers and services through an active reboot process, ensuring all ports are properly opened and bound etc. etc.
+#+BEGIN_SRC sh
+vagrant halt
+vagrant snap take --name 'Setup Complete'
+#+END_SRC
 * Demo Operation
+Navigate to the Bare Metal Provisioning wizard (Enterprise -> Provisioning and Patching -> Bare Metal Provisioning) and ensure the 'Deployments' tab is selected.
+** Create the server to be provisioned
+Execute the 'createBMP.sh' script to automatically make a VirtualBox VM (BMP) to be provisioned. 
+#+BEGIN_SRC sh
+[toby@dell-server-2 Davenport]$ ./createBMP.sh
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+Virtual machine 'BMP' is created and registered.
+UUID: df6c3d90-411b-453d-b791-8ea1769b5971
+Settings file: '/net/qnap1/VirtualBox/BMP/BMP.vbox'
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+Disk image created. UUID: 2a267e92-7ab2-4309-a4f6-a85ed3497187
+
+BMP's MAC Address: 08:00:27:4A:F8:9E
+#+END_SRC
+The MAC Address (=08:00:27:4A:F8:9E=) will be needed during the next operation
+** Deploy an OS for provisioning
+Select the 'Provision' item in the Bare Metal Provisioning wizard, and choose 'Operating System'[fn:2: we will save this as a plan and, on subsequent operations, one can choose 'Using Saved Plan', which saves some keystrokes. However to do so requires that any previous deployments using the same plan name be removed, or the plan name to be changed]. This will take us to the Provision Operating System wizard, Step 1 of 8. Provide a simple name for this deployment and add the MAC address for the BMP machine that we got when we created the VM using =createBMP.sh=. The result should look something like this:
+#+CAPTION: Provision Operating System (Step 1)
+[[./images/POS_1.png]]
+#+LATEX: \clearpage
+Select 'Next' to move to Step 2. Most of the fields are already filled out[fn:3: selecting the =Run Boot Server Pre-requisite checks' checkbox will cause a failure downstream: this check checks for a package that is no longer used], but you'll need to fill in the OS Component and Disk Layout Component configuration properties using the 'Search and Select: Entities' wizards available by selecting the appropriate magnifying glasses[fn:3: Note that if one has multiple versions of an entity the entities are sorted in ascending version number: the latest version is lowest in the wizard's entity table]. The end result should look something like:
+#+CAPTION: Provision Operating System (Step 2)
+[[./images/POS_2.png]]
+#+LATEX: \clearpage
+
+Select 'Next' to move through subsequent steps. All of them have been pre-filled by the components we configured earlier. At Step 8 select 'Save As Plan' and provide a suitable name (I use 'OL6') - this will enable the current selections to be reused directly next time around. Then hit submit. A job will be submitted and the deployment will be provisioned in the background:
+#+CAPTION: BMP Confirmation
+[[./images/BMP_Confirmation.png]]
+#+LATEX: \clearpage
+Follow the link just under the confirmation window to see the procedure activity (you might like to change the 'View Data' item on the right hand side to 'Real Time: 30 second refresh' to get automatically update this screen to show what's going on. If all is successful you should get to this point:
+#+CAPTION: BMP Procedure Activity
+[[./images/BMP_Procedure_Activity.png]]
+#+LATEX: \clearpage
+This means the tftp and stage server have been successfuly configured to PXE boot a server with the given MAC address, and thus to install on OS on that server.
+** Provision the server via PXE boot
+Either use the VirtualBox GUI to start the BMP VM, or start it up on the command line:
+#+BEGIN_SRC sh
+vboxmanage startvm BMP
+#+END_SRC
+You should see the VM go through a PXE boot and then start installing the OS according to the specifications laid out in the Operating System and Disk Layout components
