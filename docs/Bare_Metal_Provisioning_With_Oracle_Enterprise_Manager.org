@@ -1,5 +1,11 @@
 #+TITLE: Bare Metal Provisioning with Oracle Enteprise Manager
 * Overview
+* Conventions used in this document
+Text to be typed in is shown in this face: =type me in=
+
+GUI menu options will be shown connected by arrows, thus: Top -> Child1 -> Child2 -> Leaf.
+
+
 * Current Environment
 * Setup
 The following steps need to be taken once, to allow the browser to access the Oracle Enterprise Manager (OEM) GUI, and to prepare the OEM environment for Bare Metal Provisioning (BMP).
@@ -22,7 +28,21 @@ And then clicking the 'Confirm Security Exception' button. This will then take y
 #+CAPTION: OEM Login
 [[file:images/Screenshot-Login-OracleEnterpriseManager-MozillaFirefox.png]]
 #+LaTeX: \clearpage
+** Oracle Enterprise Manager GUI setup
+Login to OEM by accessing the OEM URL and using the name/password pair of 'sysman/Welcome1'. This will show you an 'Accessibility Preferences' page (this is *not* actually the page you'll first see! However the initial page is very similar, so hopefully this image is sufficient!):
+#+CAPTION: Accessibility Preferences
+[[file:images/Accessibility_Preference.png]]
+#+LaTeX: \clearpage
+Select the preferences for you (if any), and then OK. Your preferences are now set up and you will be taken to the 'OEM Welcome' Screen:
+#+CAPTION: OEM Welcome Screen
+[[file:images/OEM_Welcome_Screen.png]]
+#+LaTeX: \clearpage
+ (If you need to change these preferences you can do so using the menu Sysman -> Accessibility option)
+#+CAPTION: OEM Change Accessibility Menu
+ [[file:images/OEM_Change_Accessibility.png]]
+#+LaTeX: \clearpage
 ** Software Library
+
 *** Operating System Component
 *** Disk Component
 ** Bare Metal Provisioning Infrastructure
