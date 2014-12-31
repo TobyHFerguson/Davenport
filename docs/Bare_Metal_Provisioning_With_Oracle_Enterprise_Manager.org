@@ -1,0 +1,30 @@
+#+TITLE: Bare Metal Provisioning with Oracle Enteprise Manager
+* Overview
+* Current Environment
+* Setup
+The following steps need to be taken once, to allow the browser to access the Oracle Enterprise Manager (OEM) GUI, and to prepare the OEM environment for Bare Metal Provisioning (BMP).
+
+Accessing OEM is through the OEM URL: =https://HOST:17802/em= where =HOST= is the (resolvable) hostname or ip address of the host machine. (It is assumed that the local firewall permits port 17802 to be accessed).
+** Browser Certificates
+Connect to the OEM URL. Your browser will likely show a security exception (the image below is shown using Firefox 31.2.0):
+#+CAPTION: Initial Untrusted Certificate Screen
+[[file:images/Browser_Certificate_1.png]]
+#+LaTeX: \clearpage
+Click on the lower yellow triangle to expose the 'Add Exception...' button:
+#+CAPTION: Untrusted Connection showing 'Add Exception...' Button
+[[file:images/Browser_Certificate_2.png]]
+#+LaTeX: \clearpage
+Add the exception by clicking the 'Add Exception...' button:
+#+CAPTION: Add Security Exception
+[[file:images/Browser_Certificate_3.png]]
+#+LaTeX: \clearpage
+And then clicking the 'Confirm Security Exception' button. This will then take you to the OEM login window:
+#+CAPTION: OEM Login
+[[file:images/Screenshot-Login-OracleEnterpriseManager-MozillaFirefox.png]]
+#+LaTeX: \clearpage
+** Software Library
+*** Operating System Component
+*** Disk Component
+** Bare Metal Provisioning Infrastructure
+** Snapshot
+* Demo Operation
