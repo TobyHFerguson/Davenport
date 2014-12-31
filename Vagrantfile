@@ -13,15 +13,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
    # Update the OS
    config.vm.provision "yum_update", type: "shell", inline: "yum -q -y update"
   
-   # DHCP
-  config.vm.define "dhcp" do |d|
-    d.vm.box = "ol6minimal"
-    d.vm.hostname="dhcp.lab.net"
-    d.vm.network "private_network", ip: "192.168.50.3"
-    d.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    d.vm.provision "dhcp_service", type: "shell", path: ".dhcp/setup.sh", privileged: false
-  end
-
   # OEMREPO
   config.vm.define "oemrepo" do |db|
     db.vm.box = "ol6minimal"
@@ -52,6 +43,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     oms.vm.provision "make_agent_pull", type: "shell", path: ".oms/make_agent_pull.sh"
     oms.vm.provision "make_agent_rpm", type: "shell", path: ".oms/generate_agent.sh"
     oms.vm.provision "start_oms", type: "shell", inline: "service gcstartup start", run: "always"
+  end
+
+   # DHCP
+  config.vm.define "dhcp" do |d|
+    d.vm.box = "ol6minimal"
+    d.vm.hostname="dhcp.lab.net"
+    d.vm.network "private_network", ip: "192.168.50.3"
+    d.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    d.vm.provision "dhcp_service", type: "shell", path: ".dhcp/setup.sh", privileged: false
   end
 
   # STAGE
