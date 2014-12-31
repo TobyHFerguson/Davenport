@@ -171,5 +171,67 @@ Select 'Save and Upload' to be taken back to the Software Library:
 [[./images/Create_DL_Completed.png]]
 #+LATEX: \clearpage
 ** Bare Metal Provisioning Infrastructure
+Access the Bare Metal Provisioning wizard by selecting the Enterprise -> Provisioning and Patching -> Bare Metal Provisioning menu option:
+#+CAPTION: Bare Metal Provisioning Menu Option:
+[[./images/BMP_Menu_Option.png]]
+#+LATEX: \clearpage
+This will take you to the initial BMP screen:
+#+CAPTION: BMP Initial Screen
+[[./images/BMP_1.png]]
+#+LATEX: \clearpage
+As indicated on that initial page no BMP can occur because one or more parts of the infrastructure have not been configured. 
+Select the 'Infrastructure' tab to begin the setup:
+#+CAPTION: Infrastructure Wizard
+[[./images/Infra_1.png]]
+#+LATEX: \clearpage
+
+Add a Stage Server by selecting the appropriate 'Add' button to open up the 'Add Stage Server' wizard:
+#+CAPTION: 
+[[./images/Server_Add_1.png]]
+#+LATEX: \clearpage
+
+Select the stage server by clicking on the magnifying glass on the right and then using the Select Targets wizard:
+#+CAPTION: Stage Server Selection
+[[./images/Stage_server_selection.png]]
+#+LATEX: \clearpage
+
+This will bring you back to the 'Add Stage Server' wizard. Add the next two propeties manually:
+
+| Property        | Value                      |
+|-----------------+----------------------------|
+| Stage Directory | /stage                     |
+| Base URL        | file://stage.lab.net/stage |
+
+It is very important to get these values correct. Be careful and check your work. A failure to get these values correct isn't easy to figure out later!
+
+(Alternatively, for the Stage Directory property, by selecting the magnifying glass on the 'Stage Directory' line you can open up the 'Remote File Browser' to select the directory using a wizard)
+
+Add a Boot server similarly. The property values required are:
+
+| Property            | Value        |
+|---------------------+--------------|
+| Boot server         | tftp.lab.net |
+| TFTP Boot Directory | /tftpboot    | 
+
+Again, check these values carefully!
+
+We won't be using OEM to modify a DHCP server, so we don't configure one (its optional).
+
+Add an RPM Repository, using the following property values:
+
+| Property        | Value          |
+|-----------------+----------------|
+| Repository Name | OL6 Repository |
+| Complete URL    | http://yum.lab.net/ol6 |
+
+When this process is completed the infrastructure page (with the 'Stage Server' expanded) should look like this:
+#+CAPTION: Infrastructure Setup Review
+[[./images/Infra_review.png]]
+#+LATEX: \clearpage
+
+Returning to the 'Deployments' tab will finalize this setup and the previous warning will no longer be shown:
+#+CAPTION: Infrastructure Setup Completed
+[[./images/Infra_Complete.png]]
+#+LATEX: \clearpage
 ** Snapshot
 * Demo Operation
