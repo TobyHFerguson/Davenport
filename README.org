@@ -10,8 +10,14 @@ You will then be able to access Oracle Enterprise Manager on the host machine on
 
 The use of Oracle Enterprise Manager is explained in detail in the /Using OEM for Bare Metal Provisioning/ pdf file.
 * Setup
+** TODO Vagrant
+Describe plugins needed
++ hostmanager
++ snapshot
+
 You need to install Vagrant and VirtualBox on your host machine, and then install the /ol6minimal/ Vagrant box. That is the base level of infrastructure required.
 
+** Clone Repository
 Create the base directory for the system by cloning this git repository:
 #+BEGIN_SRC sh
 git clone https://github.org/tobyhferguson/Davenport
@@ -20,6 +26,7 @@ cd Davenport
 
 This directory /Davenport/ will be the project's home directory. You can call it anything you like. All file references etc. will be relative to this directory. So if I say something like 'unzip the database files into the /db_install/ dir, that directory will be an immediate child directory under /Davenport/. 
 
+** Download Software
 Download four software items (each comprising one or more zip files):
 + OL6 :: Latest version of Oracle Linux 6. Opensource and free.
 + DB :: Oracle Database 12C. Requires a license to download and use.
@@ -27,14 +34,14 @@ Download four software items (each comprising one or more zip files):
 + DB Template :: Oracle template for OEM 12C. Free to download.
 
 Detailed instructions are contained below:
-** OL6
+*** OL6
 Download any (we recommend the latest) version of Oracle Linux 6 from https://edelivery.oracle.com. We used Oracle Linux 6 Update 5:
 | Name                                                | Part #    |
 |-----------------------------------------------------+-----------|
 | Oracle Linux Release 6 Update 5 for x86_64 (64 Bit) | V41362-01 |
 
 Unzip the downloaded file and save the contained iso image as =OL6.iso= in the project's home directory.
-** DB
+*** DB
 Download Oracle Database 11gR2 from My Oracle Support. Specifically we tested 'Patch 10404530: 11.2.0.3.0 PATCH SET FOR ORACLE DATABASE SERVER'
 
 You don't need all the 7 parts of the database, just parts 1 and 2.
@@ -46,7 +53,7 @@ Download =p10404530_112030_Linux-x86-64_1of7.zip= and =p10404530_112030_Linux-x8
 unzip -u -d db_install /Download/p10404530_112030_Linux-x86-64_1of7.zip
 unzip -u -d db_install /Download/p10404530_112030_Linux-x86-64_2of7.zip
 #+END_SRC
-** Enterprise Manager
+*** Enterprise Manager
 Download Enterprise Manager 12C Release 4 from https://edelivery.oracle.com. You'll need the three parts, as listed below, each part will download as a zip file named after its part number:
 
 | Description                                                                                 | Part #    |
@@ -61,7 +68,7 @@ unzip -u -d oms_install /Download/V45344-01.zip
 unzip -u -d oms_install /Download/V45345-01.zip
 unzip -u -d oms_install /Download/V45346-01.zip
 #+END_SRC
-** DB Template
+*** DB Template
 We use a DB template to construct the OEM repository. This template ensures that (almost) all the parts are configured and constructed correctly (we do have to apply a patch later on to cope with a partition issue, but that gets applied automatically as part of the provisioning system).
 
 Download the DB template from http://www.oracle.com/technetwork/oem/enterprise-manager/downloads/db-templates-1959276.html. Specifically you'll need the template called '11.2.0.3 DB Template for EM 12.1.0.3 on Linux x86-64'. Download this template as a zip file into the =Davenport= directory. The zip file must be called '11.2.0.3_Database_Template_for_EM12_1_0_4_Linux_x64.zip'. Leave the file in its zipped format - it gets unzipped /inside/ the =oemrepo= vm during database construction.
@@ -93,12 +100,23 @@ Vagrant will do its magic along with Virtualbox and setup the basic VMs. It will
 + tftp :: Boot server for BMP. Provides PXE linux boot services.
 + yum :: Yum server for BMP. Provides a yum repository containing Oracle Linux 6.
 
-This process takes of the order of 2 to 3 hours (with the bulk of that time being the OMS installation).
-
 All these VMs are "standard" vagrant VMs - the =root= and =vagrant= users have the password 'vagrant'. There is also an 'oracle' user, whose password is 'oracle'. The project directory (=Davenport=) is mounted inside each VM at =/vagrant=. 
 
 The =dhcp=, =stage=, =tftp= & =yum= servers are all managed by the OMS, and so have agents running on them.
+
+This process takes of the order of 2 to 3 hours (with the bulk of that time being the OMS installation). During this time you should do two things:
++ Prepare a test machine, described below
++ Read the 'Bare Metal Provisioning with Oracle Enterprise Manager' document to learn how to use this system.
 ** Test Machine Preparation
 While the provisioning is going on you should make another Virtualbox VM that will be used as the "bare metal' machine to demonstrate Bare Metal Provisioning. The 'createBMP.sh' script will construct a machine for you, and echo out onto =stdout= the MAC address you'll need to use when provisioning onto that machine.
-* Next Steps
-Read the 'Bare Metail Provisioning with Oracle Enterprise Manager' pdf for detailed instructions on how to proceed from here.
+** Post provisioning
+Once the provisioning has completed then halt all the machines and snapshot them, thus:
+#+BEGIN_SRC sh
+vagrant halt
+vagrant snap take --name 'Post Provision'
+#+END_SRC
+This will provide you a snapshot (called /Post Provision/) for all of the machines. At any point you can do a =vagrant snap rollback --name 'Post Provision'= and it will revert you to this point in time.
+
+We will use snapshots at other points to ensure we don't lose our work.
+
+The file =oem_setupinfo.txt= contains information about how to communicate with Oracle Enterprise Manager. Note that these URLS will only work from your host machine, because that's where the =/etc/hosts= file was modified to resolve the hostnames. Port 7802 from the =oms= server has been forwarded to port 17802 on the host. Normally we will connect remotely to an url of the form =https://HOST:17802/em= where =HOST= will be the address (hostname or ipaddress) of the host machine.
