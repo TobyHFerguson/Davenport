@@ -2,10 +2,11 @@
 
 #. ./profile
 function get_private_network_name() {
-    }
+    vboxmanage showvminfo $(cat .vagrant/machines/oms/virtualbox/id) | awk '/NIC 2/ { print $8 }' | tr -d "',"
+}
 # Create a VM for testing purposes
 
-readonly VM=TestBMP
+readonly VM=BMP
 readonly os=Oracle_64
 readonly storage="SATA"
 readonly vboxdir=$(vboxmanage list systemproperties | awk '/^Default.machine.folder/ { print $4 }')
@@ -15,10 +16,10 @@ readonly vramsize=10
 readonly diskSizeInGiB=15
 
 # Delete it if its already there
-vboxmanage list runningvms | grep -q ${VM:?} && {
+vboxmanage list runningvms | grep -q "\"${VM:?}\"" && {
     vboxmanage controlvm ${VM:?} poweroff
 }
-vboxmanage list vms | grep -q ${VM:?} && {
+vboxmanage list vms | grep -q "\"${VM:?}\"" && {
     vboxmanage unregistervm ${VM:?} --delete
 }
 
