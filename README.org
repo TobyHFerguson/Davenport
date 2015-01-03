@@ -104,11 +104,7 @@ All these VMs are "standard" vagrant VMs - the =root= and =vagrant= users have t
 
 The =dhcp=, =stage=, =tftp= & =yum= servers are all managed by the OMS, and so have agents running on them.
 
-This process takes of the order of 2 to 3 hours (with the bulk of that time being the OMS installation). During this time you should do two things:
-+ Prepare a test machine, described below
-+ Read the 'Bare Metal Provisioning with Oracle Enterprise Manager' document to learn how to use this system.
-** Test Machine Preparation
-While the provisioning is going on you should make another Virtualbox VM that will be used as the "bare metal' machine to demonstrate Bare Metal Provisioning. The 'createBMP.sh' script will construct a machine for you, and echo out onto =stdout= the MAC address you'll need to use when provisioning onto that machine.
+This process takes of the order of 2 to 3 hours (with the bulk of that time being the OMS installation). 
 ** Post provisioning
 Once the provisioning has completed then halt all the machines and snapshot them, thus:
 #+BEGIN_SRC sh

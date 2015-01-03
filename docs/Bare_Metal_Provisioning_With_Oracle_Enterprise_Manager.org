@@ -79,21 +79,10 @@ Provide a name and (optional) description and hit 'Next' to get to Step 2. In St
 
 (OEM has already been configured with a Named Credential (ROOT_NC) with this user/password pair)
 
-Then add a an Operating System User by selecting the 'Add' button. Use the following settings:
-
-| Item              | Value    |
-|-------------------+----------|
-| User Name         | oracle   |
-| Password          | oracle   |
-| Confirm Password  | oracle   |
-| Primary Group     | oracle   |
-| Additional Groups | oinstall |
-|                   |          |
-
-(Again, this user/password combination has already been configured as a Named Credential (ORACLE_NC) within OEM)
 #+CAPTION: Create OS (Step 2)
 [[./images/Create_OS_2.png]]
 #+LATEX: \clearpage
+(Note - a user =oracle=, primary group =oinstall=, secondary group =dba= is automatically constructed by the BMP installer).
 
 Hit 'OK' and 'Next' to move to Step 3:
 
@@ -108,9 +97,33 @@ Set the following Enterprise Manager Agent Properties:
 | Install Group               | oinstall |
 | Agent Registration Password | Welcome1 |
 
-Change the Package List from =@everything= to =@base= - this will greatly reduce the number of packages installed during BMP, thus speeding the process up.
+Change the Package List from =@everything= to
+#+BEGIN_EXAMPLE
+@base
+nfs-utils
+openssh-server
+make
+binutils
+gcc
+libaio
+glibc-common
+libstdc++
+sysstat
+#+END_EXAMPLE
+The =@base= will make sure we install the minimal package set; the other packages are required to allow nfs to be used during the kickstart installation, to permit ssh access, and as requisites for a machine to host an OEM Agent.
 
-The screen should look like this:
+Once the packages are installed some configuration is required. We do this in the 'post install' section, by adding the following:
+#+BEGIN_SRC sh
+%post --log=/root/install.post.log
+# Ensure that oracle can perform sudo actions with no password
+echo 'oracle	ALL=(ALL)	NOPASSWD: ALL' >/etc/sudoers.d/oracle
+# Configure sudo for use by Enterprise Manager
+sed -i -e '/requiretty$/s/^/#/' -e'/visiblepw$/s/!//'  /etc/sudoers
+#+END_SRC
+(Note that I log the post install actions so that I can trace errors later if necessary).
+#+CAPTION: Postinstall Wizard
+[[./images/Create_OS_3_Postinstall.png]]
+The final Create OS Wizard screen should look like this:
 #+CAPTION: Create OS (Step 3) With Properties Updated
 [[./images/Create_OS_3_Updated.png]]
 #+LATEX: \clearpage
@@ -209,7 +222,7 @@ Add a Boot server similarly. The property values required are:
 | Property            | Value        |
 |---------------------+--------------|
 | Boot server         | tftp.lab.net |
-| TFTP Boot Directory | /tftpboot    | 
+| TFTP Boot Directory | /tftpboot    |
 
 Again, check these values carefully!
 
@@ -252,9 +265,9 @@ Disk image created. UUID: 2a267e92-7ab2-4309-a4f6-a85ed3497187
 
 BMP's MAC Address: 08:00:27:4A:F8:9E
 #+END_SRC
-The MAC Address (=08:00:27:4A:F8:9E=) will be needed during the next operation
+The MAC Address (in this case =08:00:27:4A:F8:9E=) will be needed during the next operation.
 ** Deploy an OS for provisioning
-Select the 'Provision' item in the Bare Metal Provisioning wizard, and choose 'Operating System'[fn:2: we will save this as a plan and, on subsequent operations, one can choose 'Using Saved Plan', which saves some keystrokes. However to do so requires that any previous deployments using the same plan name be removed, or the plan name to be changed]. This will take us to the Provision Operating System wizard, Step 1 of 8. Provide a simple name for this deployment and add the MAC address for the BMP machine that we got when we created the VM using =createBMP.sh=. The result should look something like this:
+Select the 'Provision' item in the Bare Metal Provisioning wizard, and choose 'Operating System'[fn:2: we will save this as a plan and, on subsequent operations, one can choose 'Using Saved Plan', which saves some keystrokes. However to do so requires that any previous deployments using the same plan name be removed, or the plan name to be changed]. This will take us to the Provision Operating System wizard, Step 1 of 8. Provide a simple name for this deployment, choose the correct OS type  and add the MAC address for the BMP machine that we got when we created the VM using =createBMP.sh=. The result should look something like this:
 #+CAPTION: Provision Operating System (Step 1)
 [[./images/POS_1.png]]
 #+LATEX: \clearpage
@@ -278,3 +291,46 @@ Either use the VirtualBox GUI to start the BMP VM, or start it up on the command
 vboxmanage startvm BMP
 #+END_SRC
 You should see the VM go through a PXE boot and then start installing the OS according to the specifications laid out in the Operating System and Disk Layout components
+** Re-provisioning
+If you wish to go through the PXE boot process again then you need to do two things:
+*** Delete the BMP server from Enterprise Manager
+Select the menu option 'Targets -> All targets' to list all the targets:
+#+CAPTION: Selecting All Targets menu option:
+[[./images/all_targets.png]]
+#+LATEX: \clearpage
+Select the =bmp.lab.net:3872' link:
+#+CAPTION: Selecting the 'bmp.lab.net:3872' link
+[[./images/bmp_link.png]]
+#+LATEX: \clearpage
+This will take you to the bmp agent page:
+#+CAPTION: BMP Agent
+[[./images/bmp_agent.png]]
+#+LATEX: \clearpage
+Select the 'Agent -> Target Setup -> Agent Decommision' menu item to start the agent decommission process:
+#+CAPTION: Agent Decommission Menu Selection
+[[./images/agent_decomission.png]]
+#+LATEX: \clearpage
+This will popup a confirmation:
+#+CAPTION: Agent Decommission Agent Down Confirmation
+[[./images/agent_decommission_popup.png]]
+#+LATEX: \clearpage
+Ignore the content of this popup and Press 'Continue' (because we're going to completely remove the host and the agent we don't need to stop the agent as requested by the popup). That'll take us to a list of monitored targets:
+#+CAPTION: Agent Decommision Targets List
+[[./images/agent_decommission_targets.png]]
+#+LATEX: \clearpage
+Hit 'Continue' in the top right corner. This will take you to a confirmation popup:
+#+CAPTION: Agent Decommission Target Delete Confirmation
+[[./images/agent_decommission_confirmation_popup.png]]
+Accept the popup and you'll return to the 'All Targets' screen, with the =bmp= and =bmp:3872= links deleted:
+#+CAPTION: All Targets After Deleting BMP Agent
+[[./images/all_targets_no_bmp.png]]
+#+LATEX: \clearpage
+*** Swap the disks and reboot the BMP server
+This can be done via the VirtualBox GUI:
+- stop the server
+- remove the disk from the server
+- remove and delete the disk from the media manager's list of disks (and thus the underlying file systems)
+- add a new disk to the server
+- reboot the server
+
+Alternatively simply use the =rebootBMP.sh= to perform this operation.
