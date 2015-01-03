@@ -38,16 +38,12 @@ vboxmanage modifyvm "${VM:?}" --boot1 disk --boot2 net --boot3 none --boot4 none
 VBoxManage modifyvm "${VM:?}" --nictype1 Am79C973
 # Connect the VM to the hostonly network that we're using
 vboxmanage modifyvm "${VM:?}" --nic1 hostonly --hostonlyadapter1 $(get_private_network_name)
-# Connect the VM's eth1 (nic2) to the NAT network
-vboxmanage modifyvm "${VM:?}" --nic2 NAT
-# Forward host port 6622 to vm port 22
-vboxmanage modifyvm "${VM:?}" --natpf2 "guestssh,tcp,,6622,,22"
 # Modify the vms' memory and vram sizes
 vboxmanage modifyvm "${VM:?}" --memory "${memsize:?}" --vram "${vramsize:?}"
 # Report the vm's MAC address
 MAC=$(vboxmanage showvminfo "${VM:?}" | grep 'NIC 1' |
 sed -n "/MAC/s/.*MAC: \([^,][^,]*\),.*/\1/p" |
 sed "s/\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)/\1:\2:\3:\4:\5:\6/")
-echo $MAC,192.168.50.196,bmp.lab.net >.dhcp/dhcp-hostsfile_tmp
+echo $MAC,192.168.50.196,bmp.lab.net >.dhcp/dhcp-hostsfile
 vagrant ssh dhcp -c 'sudo service dnsmasq restart'
 echo "${VM:?}'s MAC address is: ${MAC:?}"
