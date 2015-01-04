@@ -40,7 +40,7 @@ Download any (we recommend the latest) version of Oracle Linux 6 from https://ed
 |-----------------------------------------------------+-----------|
 | Oracle Linux Release 6 Update 5 for x86_64 (64 Bit) | V41362-01 |
 
-Unzip the downloaded file and save the contained iso image as =OL6.iso= in the project's home directory.
+Unzip the downloaded file and save the contained iso image as =ol6.iso= in the project's home directory.
 *** DB
 Download Oracle Database 11gR2 from My Oracle Support. Specifically we tested 'Patch 10404530: 11.2.0.3.0 PATCH SET FOR ORACLE DATABASE SERVER'
 
