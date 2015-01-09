@@ -1,6 +1,6 @@
 #!/bin/bash
 # Add the prereqs
-sudo yum -y -q install unzip oracle-rdbms-server-11gR2-preinstall
+sudo yum -y -q --disablerepo='*' --enablerepo='*ol6_latest' install unzip oracle-rdbms-server-11gR2-preinstall
 # Construct the needed oracle environment
 sudo su -c 'cat /vagrant/.oemrepo/oracle_profile  >>/home/oracle/.bash_profile' - oracle
 # Ensure that user oracle can be used by the OEM Manager

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install dhcp service specific packages
-rpm --quiet -q dnsmasq || sudo yum -q -y install dnsmasq
+rpm --quiet -q dnsmasq || sudo yum -q -y --disablerepo='*' --enablerepo='*ol6_latest' install dnsmasq
 
 # Copy in the configuration file
 sudo cp -f /vagrant/.dhcp/dnsmasq.conf /etc/dnsmasq.conf

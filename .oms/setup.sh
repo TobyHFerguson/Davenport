@@ -100,3 +100,6 @@ sudo su -c 'emcli set_default_pref_cred -set_name="HostCreds" -target_type=oracl
 # Turn off security until I can figure out which ports are required
 sudo service iptables stop
 sudo chkconfig iptables off
+
+# Ensure that the dhcp server is used for dns
+sudo echo 'prepend domain-name-servers 192.168.50.3;' >/etc/dhcp/dhcpclient.conf

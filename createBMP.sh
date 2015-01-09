@@ -7,6 +7,8 @@ function get_private_network_name() {
 # Create a VM for testing purposes
 
 readonly VM=BMP
+readonly HOSTNAME=bmp.lab.net
+readonly IP=192.168.50.196
 readonly os=Oracle_64
 readonly storage="SATA"
 readonly vboxdir=$(vboxmanage list systemproperties | awk '/^Default.machine.folder/ { print $4 }')

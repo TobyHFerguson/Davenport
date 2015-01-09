@@ -1,4 +1,5 @@
 #+TITLE: Project Davenport
+#+STARTUP: showall nohideblocks
 * Overview
 This project provides a 'one button' installation of a complete virtualized environment for demonstrating Oracle Enterprise Manager 12c's Bare Metal Provisioning capability
 

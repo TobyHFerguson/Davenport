@@ -4,7 +4,7 @@
 # tftp-server installs a tftp server attached to xinetd, serving files out of /var/lib/tftpboot
 # syslinux-tftpboot provides all the syslinux files (such as pxelinux.0) that implement PXE
 
-rpm --quiet -q tftp-server syslinux-tftpboot || yum -q -y --disablerepo='*' --enablerepo=ol6_latest install tftp-server syslinux-tftpboot
+rpm --quiet -q tftp-server syslinux-tftpboot || yum -q -y --disablerepo='*' --enablerepo='*ol6_latest' install tftp-server syslinux-tftpboot
 
 # We want to enable the 'oracle' user to be able to provision to the boot server
 # Thus we change the ownership of the /var/lib/tftpboot dir and its contents

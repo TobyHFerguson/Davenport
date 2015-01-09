@@ -15,7 +15,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   # OEMREPO
   config.vm.define "oemrepo" do |db|
-    db.vm.box = "ol6minimal"
+    db.vm.box = "ol6u5-minimal-btrfs-uek.box"
+    db.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     db.vm.hostname = "oemrepo.lab.net"
     db.vm.network "private_network", ip: "192.168.50.4"
     db.vm.provision "db_service", type: "shell", path: ".oemrepo/oemrepo_setup.sh", privileged: false
@@ -27,7 +28,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # OMS
   config.vm.define "oms" do |oms|
-    oms.vm.box = "ol6minimal"
+    oms.vm.box = "ol6u5-minimal-btrfs-uek.box"
+    oms.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     oms.vm.hostname = "oms.lab.net"
     oms.vm.network "private_network", ip: "192.168.50.5"
 
@@ -47,7 +49,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
    # DHCP
   config.vm.define "dhcp" do |d|
-    d.vm.box = "ol6minimal"
+    d.vm.box = "ol6u5-minimal-btrfs-uek"
+    d.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     d.vm.hostname="dhcp.lab.net"
     d.vm.network "private_network", ip: "192.168.50.3"
     d.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
@@ -56,7 +59,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # STAGE
   config.vm.define "stage" do |s|
-    s.vm.box = "ol6minimal"
+    s.vm.box = "ol6u5-minimal-btrfs-uek"
+    s.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     s.vm.hostname = "stage.lab.net"
     s.vm.network "private_network", ip: "192.168.50.6"
     s.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
@@ -65,7 +69,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # TFTP
   config.vm.define "tftp" do |t|
-    t.vm.box = "ol6minimal"
+    t.vm.box = "ol6u5-minimal-btrfs-uek"
+    t.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     t.vm.hostname = "tftp.lab.net"
     t.vm.network "private_network", ip: "192.168.50.7"
     t.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
@@ -74,11 +79,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # YUM
   config.vm.define "yum" do |y|
-    y.vm.box = "ol6minimal"
+    y.vm.box = "ol6u5-minimal-btrfs-uek"
+    y.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     y.vm.hostname = "yum.lab.net"
     y.vm.network "private_network", ip: "192.168.50.8"
     y.vm.provider "virtualbox" do |v|
       v.customize [ "modifyvm", :id, "--boot1", "disk"]
+      v.customize [ "storagectl", :id, "--name", "SATA", "--add", "sata"]
       v.customize [ "storageattach", :id, "--storagectl", "SATA", "--port", "1", "--device", "0", "--type", "dvddrive", "--medium", "ol6.iso" ]
     end
     y.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
