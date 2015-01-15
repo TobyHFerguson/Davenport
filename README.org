@@ -123,9 +123,9 @@ This process takes of the order of 2 to 3 hours (with the bulk of that time bein
 Once the provisioning has completed then halt all the machines and snapshot them, thus:
 #+BEGIN_SRC sh
 vagrant halt
-vagrant snap take --name 'Post Provision'
+vagrant snap take --name Post_Provision
 #+END_SRC
-This will provide you a snapshot (called /Post Provision/) for all of the machines. At any point you can do a =vagrant snap rollback --name 'Post Provision'= and it will revert you to this point in time.
+This will provide you a snapshot (called /Post_Provision/) for all of the machines. At any point you can do a =vagrant snap rollback --name Post_Provision= and it will revert you to this point in time.
 
 We will use snapshots at other points to ensure we don't lose our work.
 
