@@ -24,6 +24,8 @@ The base box used is =ol6u5-minimal-btrfs-uek.box=. You can install this in Vagr
 vagrant box add http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box --name ol6u5-minimal-btrfs-uek
 #+END_SRC
 although the first =vagrant up= you execute will also add that box if its not already been added.
+
+(How to build =ol6u5-minimal-btrfs-uek.box= is described in my [[https://github.com/TobyHFerguson/Corralitos][Corralitos]] repository)
 *** Vagrant Plugins
 Install the following vagrant plugins:
 + hostmanager :: https://github.com/smdahlen/vagrant-hostmanager
