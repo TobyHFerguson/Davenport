@@ -11,13 +11,24 @@ You will then be able to access Oracle Enterprise Manager on the host machine on
 
 The use of Oracle Enterprise Manager is explained in detail in the /Using OEM for Bare Metal Provisioning/ pdf file.
 * Setup
-** TODO Vagrant
-Describe plugins needed
-+ hostmanager
-+ snapshot
+** Required Host Software
+No specific OS is assumed for the host. However I've only used Oracle Linux 6 and not tested any of these instructions out using a different host.
+** Virtual Box
+Download and install the latest version of VirtualBox (http://Virtualbox.org). I used 4.3.18r96516 but you should be good with any younger version, and probably many older ones too!
+** Vagrant
+Install Vagrant (https://www.vagrantup.com/downloads.html)
+You need to install Vagrant and VirtualBox on your host machine.
 
-You need to install Vagrant and VirtualBox on your host machine, and then install the /ol6minimal/ Vagrant box. That is the base level of infrastructure required.
-
+The base box used is =ol6u5-minimal-btrfs-uek.box=. You can install this in Vagrant by hand thus:
+#+BEGIN_SRC sh
+vagrant box add http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box --name ol6u5-minimal-btrfs-uek
+#+END_SRC
+although the first =vagrant up= you execute will also add that box if its not already been added.
+*** Vagrant Plugins
+Install the following vagrant plugins:
++ hostmanager :: https://github.com/smdahlen/vagrant-hostmanager
++ vbguest :: https://github.com/dotless-de/vagrant-vbguest
++ snapshot :: https://github.com/scalefactory/vagrant-multiprovider-snap
 ** Clone Repository
 Create the base directory for the system by cloning this git repository:
 #+BEGIN_SRC sh
