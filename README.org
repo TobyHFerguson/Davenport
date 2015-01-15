@@ -76,7 +76,7 @@ Download Enterprise Manager 12C Release 4 from https://edelivery.oracle.com. You
 | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk2of3  | V45345-01 |
 | Oracle Enterprise Manager Cloud Control 12c Release 4 (12.1.0.4) for Linux x86-64 Disk 3of3 | V45346-01 | 
 
-Unzip /all/ of these files into the =oms_install= directory. Again, if you downloaded the zip files into =/Downloads= then the following executed in the =Davenport= directory will unzip them correctly:
+Unzip /all/ of these files into the =oms_install= directory. Again, if you downloaded the zip files into =/Download= then the following executed in the =Davenport= directory will unzip them correctly:
 #+BEGIN_SRC sh
 unzip -u -d oms_install /Download/V45344-01.zip
 unzip -u -d oms_install /Download/V45345-01.zip
