@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# update the image
-sudo yum -q -y update
-
 # Install needed packages
 declare -a packages
 
