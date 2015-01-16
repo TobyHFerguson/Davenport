@@ -5,6 +5,12 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # ##########
+  # Configuration shared by all vms
+  # All vms use the same underlying box image
+  config.vm.box = "ol6u5-minimal-btrfs-uek.box"
+  config.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
+
   # Manage hostnaming on all vms
    config.hostmanager.enabled = true
    config.hostmanager.include_offline = true # Add up boxes or boxes with private network to /etc/hosts on active hosts
@@ -12,11 +18,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
    config.vm.provision "update_repo_file", type: "shell", inline: "curl --silent http://public-yum.oracle.com/public-yum-ol6.repo >/etc/yum.repos.d/public-yum-ol6.repo"
    # Update the OS
    config.vm.provision "yum_update", type: "shell", inline: "yum -q -y update"
-  
+   # ##########
+   
   # OEMREPO
   config.vm.define "oemrepo" do |db|
-    db.vm.box = "ol6u5-minimal-btrfs-uek.box"
-    db.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     db.vm.hostname = "oemrepo.lab.net"
     db.vm.network "private_network", ip: "192.168.50.4"
     db.vm.provision "db_service", type: "shell", path: ".oemrepo/oemrepo_setup.sh", privileged: false
@@ -28,8 +33,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # OMS
   config.vm.define "oms" do |oms|
-    oms.vm.box = "ol6u5-minimal-btrfs-uek.box"
-    oms.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     oms.vm.hostname = "oms.lab.net"
     oms.vm.network "private_network", ip: "192.168.50.5"
 
@@ -49,8 +52,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
    # DHCP
   config.vm.define "dhcp" do |d|
-    d.vm.box = "ol6u5-minimal-btrfs-uek"
-    d.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     d.vm.hostname="dhcp.lab.net"
     d.vm.network "private_network", ip: "192.168.50.3"
     d.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
@@ -59,8 +60,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # STAGE
   config.vm.define "stage" do |s|
-    s.vm.box = "ol6u5-minimal-btrfs-uek"
-    s.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     s.vm.hostname = "stage.lab.net"
     s.vm.network "private_network", ip: "192.168.50.6"
     s.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
@@ -69,8 +68,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # TFTP
   config.vm.define "tftp" do |t|
-    t.vm.box = "ol6u5-minimal-btrfs-uek"
-    t.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     t.vm.hostname = "tftp.lab.net"
     t.vm.network "private_network", ip: "192.168.50.7"
     t.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
@@ -79,8 +76,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # YUM
   config.vm.define "yum" do |y|
-    y.vm.box = "ol6u5-minimal-btrfs-uek"
-    y.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
     y.vm.hostname = "yum.lab.net"
     y.vm.network "private_network", ip: "192.168.50.8"
     y.vm.provider "virtualbox" do |v|
