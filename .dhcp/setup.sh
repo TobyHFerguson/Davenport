@@ -15,10 +15,7 @@ sudo setenforce 0
 sudo chkconfig dnsmasq on
 sudo service dnsmasq start
 
-# Update iptables so that the bootps service can be accessed on port 67
-# and the DNS service on port 53 (default ports for each)
-
-# Update iptables iff they need to be updated
+# Update iptables so that the bootps service and domain services can be accessed iff necessary
 sudo iptables -L INPUT | grep 'dpt:bootps' || {
     sudo iptables -I INPUT -i eth1 -p udp --dport bootps -j ACCEPT
     sudo iptables -I INPUT -i eth1 -p udp --dport domain -j ACCEPT

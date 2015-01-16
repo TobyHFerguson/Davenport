@@ -27,7 +27,7 @@ packages+=(sysstat)
 # rpm-build needed to construct the agent rpm
 packages+=(rpm-build)
 
-sudo yum -q -y install ${packages[*]}
+rpm --quiet -q ${packages[*]} || sudo yum -q -y install ${packages[*]}
 
 # configure oracle user
 sudo useradd -U -m oracle

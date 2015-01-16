@@ -1,5 +1,6 @@
+packages=${packages[*]}
 # Stage service specific operations
-yum -q -y install wget rpcbind nfs-utils
+rpm --quiet -q ${packages[*]} || yum -q -y install ${packages[*]}
 
 # Update iptables (according to http://mcdee.com.au/tutorial-configure-iptables-for-nfs-server-on-centos-6/)
 
@@ -18,7 +19,7 @@ iptables -L INPUT -n | grep --quiet 111 || {
 # Expose stage directory via nfs
 export STAGE_DIR=/stage
 install --owner oracle --group oinstall -d ${STAGE_DIR:?}
-echo "${STAGE_DIR:?} *(ro,sync)" >>/etc/exports
+grep --silent "${STAGE_DIR:?}" /etc/exports || echo "${STAGE_DIR:?} *(ro,sync)" >>/etc/exports
 
 
 # Ensure services are running and will run after a reboot

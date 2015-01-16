@@ -1,6 +1,6 @@
 #!/bin/bash
 # Yum requires httpd
-yum -q -y --disablerepo='*' --enablerepo='*ol6_latest' install httpd
+rpm --quiet -q httpd || yum -q -y --disablerepo='*' --enablerepo='*ol6_latest' install httpd
 
 # Setup the httpd conf file properly
 sed -i 's/^#ServerName.*80/ServerName yum.lab.net:80/' /etc/httpd/conf/httpd.conf
@@ -9,7 +9,6 @@ service httpd start
 chkconfig httpd on
 
 
-readonly CONTEXT_DIR=ol6
 readonly ISO=/dev/sr0
 readonly ISO_IMAGE_DIR=/media/ol6
 
@@ -20,7 +19,7 @@ mkdir -p ${ISO_IMAGE_DIR:?}
      mount -a
      }
 # Expose the iso image directory via the web
-ln -fs ${ISO_IMAGE_DIR:?} /var/www/html/${CONTEXT_DIR:?}
+ln -fs ${ISO_IMAGE_DIR:?} /var/www/html/
 
 # Update the iptables iff necessary
 iptables -L INPUT -n | grep -q dpt:80 || {

@@ -1,17 +1,22 @@
 #!/bin/bash
 # Add the prereqs
-sudo yum -y -q --disablerepo='*' --enablerepo='*ol6_latest' install unzip oracle-rdbms-server-11gR2-preinstall
+packages=(unzip oracle-rdbms-server-11gR2-preinstall)
+rpm --quiet -q ${packages[*]} || sudo yum -y -q --disablerepo='*' --enablerepo='*ol6_latest' install ${packages[*]}
 # Construct the needed oracle environment
-sudo su -c 'cat /vagrant/.oemrepo/oracle_profile  >>/home/oracle/.bash_profile' - oracle
+sudo grep --silent /vagrant/.oemrepo/oracle_profile /home/oracle/.bash_profile || { 
+    sudo su -c 'echo ". /vagrant/.oemrepo/oracle_profile"  >>/home/oracle/.bash_profile' - oracle
+    }
 # Ensure that user oracle can be used by the OEM Manager
 sudo sed -i -e '/requiretty$/s/^/#/' -e'/visiblepw$/s/!//'  /etc/sudoers
 # Construct the ORACLE_BASE
 sudo mkdir -p /u01/app/oracle
 sudo chown -R oracle:oinstall /u01
 
-# Ensure that port 1521 is open
-sudo iptables -I INPUT -p tcp --dport 1521 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo service iptables save
+# Ensure that port 1521 is open to allow db clients access
+sudo iptables -L INPUT -n | grep --silent 1521 || {
+    sudo iptables -I INPUT -p tcp --dport 1521 -m state --state NEW,ESTABLISHED -j ACCEPT
+    sudo service iptables save
+    }
 
 # Unzip the database install files, if not already done
 [ -d /vagrant/db_install ] || {
