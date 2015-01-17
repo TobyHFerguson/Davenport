@@ -9,17 +9,14 @@ service httpd start
 chkconfig httpd on
 
 
-readonly ISO=/dev/sr0
-readonly ISO_IMAGE_DIR=/media/ol6
+readonly CONTEXT_DIR=/var/www/html/ol6
 
 # Update the /etc/fstab if necessary and mount the iso image
-mkdir -p ${ISO_IMAGE_DIR:?}
- grep -q ${ISO:?} /etc/fstab || {
-     echo -e "${ISO:?}\t${ISO_IMAGE_DIR:?}\tauto\tro\t0 0\n" >>/etc/fstab
+mkdir -p ${CONTEXT_DIR:?}
+grep -q ${CONTEXT_DIR:?} /etc/fstab || {
+     echo -e "/vagrant/ol6.iso\t${CONTEXT_DIR:?}\tiso9660\tloop,ro\t0 0\n" >>/etc/fstab
      mount -a
      }
-# Expose the iso image directory via the web
-ln -fs ${ISO_IMAGE_DIR:?} /var/www/html/
 
 # Update the iptables iff necessary
 iptables -L INPUT -n | grep -q dpt:80 || {
