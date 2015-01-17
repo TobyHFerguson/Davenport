@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # Script for deleting a host agent and all its managed targets
 # $1 must be the Fully Qualified Domain Name of the host to be deleted.
 

@@ -4,7 +4,6 @@
 function get_private_network_name() {
     vboxmanage showvminfo $(cat .vagrant/machines/oms/virtualbox/id) | awk '/NIC 2/ { print $8 }' | tr -d "',"
 }
-# Create a VM for testing purposes
 
 readonly VM=BMP
 readonly HOSTNAME=bmp.lab.net
@@ -16,15 +15,6 @@ readonly diskfile="${vboxdir:?}/${VM:?}/${VM:?}.vdi"
 readonly memsize=512
 readonly vramsize=10
 readonly diskSizeInGiB=15
-
-# Delete it if its already there
-if $(vboxmanage list runningvms | grep --quiet "\"${VM:?}\"")
-then
-    vboxmanage controlvm ${VM:?} poweroff
-    rebootBMP
-else
-    createBMP
-fi
 
 # Create the VM
 function createBMP() {
@@ -53,7 +43,15 @@ function createBMP() {
     echo "${VM:?}'s MAC address is: ${MAC:?}"
 }
 
-function rebootBMP() {
+# reset BMP by stopping it, replacing the disk with a blank one, erasing it from OEM and restarting
+function resetBMP() {
+    # Stop the VM
+    if $(vboxmanage list runningvms | grep --quiet "\"${VM:?}\"") 
+    then
+	vboxmanage controlvm ${VM:?} poweroff
+	sleep 15
+    fi
+
     # Detach and delete the disk
     vboxmanage storageattach "${VM}" --storagectl "${storage:?}" --port 0 --device 0 --type hdd --medium none
     vboxmanage closemedium disk ${diskfile:?} --delete
@@ -68,3 +66,13 @@ function rebootBMP() {
     # start the vm
     vboxmanage startvm ${VM}
 }
+
+
+# Create a VM for testing purposes - simply reboot if necessary.
+if $(vboxmanage list vms | grep --quiet "\"${VM:?}\"")
+then
+    resetBMP
+else
+    createBMP
+fi
+
