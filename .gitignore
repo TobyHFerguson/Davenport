@@ -1,2 +1,8 @@
 /docs/images/.@__thumb/
 *~
+/.vagrant/
+/11.2.0.3_Database_Template_for_EM12_1_0_4_Linux_x64.zip
+/db_install/
+/ol6.iso
+/oms_install/
+/typescript
