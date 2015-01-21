@@ -1,4 +1,4 @@
-packages=${packages[*]}
+packages=(wget rpcbind nfs-utils)
 # Stage service specific operations
 rpm --quiet -q ${packages[*]} || yum -q -y install ${packages[*]}
 
@@ -33,5 +33,8 @@ RPM=oracle-agt-12.1.0.4.0-1.0.x86_64.rpm
 SRC=/vagrant/${RPM:?}
 DEST=/stage/${RPM:?}
 # Copy in the agent rpm if the source is newer
-[[ ${SRC:?} -nt ${DEST:?} ]] &&  install --mode 444 ${SRC:?} /stage
+if [[ ${SRC:?} -nt ${DEST:?} ]] 
+then 
+    install --mode 444 ${SRC:?} /stage
+fi
 
