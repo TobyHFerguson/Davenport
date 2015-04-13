@@ -42,7 +42,16 @@ sudo install -o oracle -g oracle -d /u01/app/oracle/swlib
 sudo chown --recursive oracle:oracle /u01
 
 # Change File Descriptor limits (both hard and soft) to 16384 for oracle user. Needed by WebLogic
-sudo su -c 'echo -e "oracle\t-\tnofile\t16384" >>/etc/security/limits.conf' - root
+# as per http://docs.oracle.com/cd/E24628_01/install.121/e22624/install_em_exist_db.htm#EMBSC162
+sudo su -c 'cat >> /etc/security/limits.conf <<EOF
+oracle  soft    nofile  16384
+oracle  hard    nofile  16384
+oracle  soft    nproc   13312
+oracle  hard    nproc   13312
+EOF' - root
+
+# Ensure that neither oms.lab.net nor oms are resolved in /etc/hosts to 127.0.0.1
+sudo sed -i '/127.0.0.1/s/oms.lab.net oms //' /etc/hosts
 
 # setup firewall so we can access the OMS remotely
 sudo iptables -L INPUT -n | grep -q 7802  || {
