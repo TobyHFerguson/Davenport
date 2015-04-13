@@ -3,26 +3,20 @@
 # Install needed packages
 declare -a packages
 
-# glibc for OMS
-packages=(glibc-devel.x86_64 glibc-devel.i686)
-# Packages needed by OMS Agent
+# Packages required for Oracle Linux 6, as per http://docs.oracle.com/cd/E24628_01/install.121/e22624/preinstall_req_packages.htm#EMBSC131
+packages=(make binutils gcc libaio glibc-common libstdc++ libXtst sysstat glibc-devel glibc-devel.i686)
+# Packages needed by OMS Agent construction process (figured out by trial and error)
 packages+=(bc)
-packages+=(make)
 packages+=(zip)
 packages+=(unzip)
+packages+=(rpm-build)
 # packages needed for ssh -X access
-packages+=(xorg-x11-xauth)		# for authorisation
-packages+=(xorg-x11-utils)		# for /usr/bin/xdpyinfo - to figure out the colors
+# for authorisation
+packages+=(xorg-x11-xauth)
+# for /usr/bin/xdpyinfo - to figure out the colors
+packages+=(xorg-x11-utils)		
 # packages needed for OEM Management Agent
 packages+=(openssh-clients)
-packages+=(binutils)
-packages+=(gcc)
-packages+=(libaio)
-packages+=(glibc-common)
-packages+=(libstdc++)
-packages+=(sysstat)
-# rpm-build needed to construct the agent rpm
-packages+=(rpm-build)
 
 rpm --quiet -q ${packages[*]} || sudo yum -q -y install ${packages[*]}
 
