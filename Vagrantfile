@@ -9,7 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Configuration shared by all vms
   # All vms use the same underlying box image
   config.vm.box = "ol6u5-minimal-btrfs-uek"
-  config.vm.box_url = "http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box"
+  config.vm.box_url = "http://tobyhferguson.org/boxes/ol6u5-minimal-btrfs-uek.box"
 
   # Manage hostnaming on all vms
    config.hostmanager.enabled = true
