@@ -31,6 +31,13 @@ Install the following vagrant plugins:
 + hostmanager :: https://github.com/smdahlen/vagrant-hostmanager
 + vbguest :: https://github.com/dotless-de/vagrant-vbguest
 + snapshot :: https://github.com/scalefactory/vagrant-multiprovider-snap
+Running the following will accomplish the plugin installation:
+#+BEGIN_SRC sh
+for plugin in vagrant-hostmanager vagrant-vbguest vagrant-multiprovider-snap
+do
+    vagrant plugin install $plugin
+done
+#+END_SRC
 ** Clone Repository
 Create the base directory for the system by cloning this git repository:
 #+BEGIN_SRC sh
