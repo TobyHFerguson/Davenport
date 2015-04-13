@@ -18,10 +18,14 @@ sudo iptables -L INPUT -n | grep --silent 1521 || {
     sudo service iptables save
     }
 
-# Unzip the database install files, if not already done
+# Check that the db_install directory has been constructed
 [ -d /vagrant/db_install ] || {
-unzip -u -d /vagrant /vagrant/p10404530_112030_Linux-x86-64_1of7.zip
-unzip -u -d /vagrant /vagrant/p10404530_112030_Linux-x86-64_2of7.zip
+        cat - 1>&2 <<EOF
+Can't find the directory "db_install" in the current directory. 
+Please unzip the OEM Installation Zip files into "db_install", like this:
+unzip -u -d db_install /path/to/p10404530_112030_Linux-x86-64_1of7.zip
+unzip -u -d db_install /path/to/p10404530_112030_Linux-x86-64_2of7.zip
+EOF
 }
 
 # Install the db
