@@ -51,35 +51,35 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
    # DHCP
-  config.vm.define "dhcp" do |d|
-    d.vm.hostname="dhcp.lab.net"
-    d.vm.network "private_network", ip: "192.168.50.3"
-    d.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    d.vm.provision "dhcp_service", type: "shell", path: ".dhcp/setup.sh", privileged: false
+  config.vm.define "dhcp" do |x|
+    x.vm.hostname="dhcp.lab.net"
+    x.vm.network "private_network", ip: "192.168.50.3"
+    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "dhcp_service", type: "shell", path: ".dhcp/setup.sh", privileged: false
   end
 
   # STAGE
-  config.vm.define "stage" do |s|
-    s.vm.hostname = "stage.lab.net"
-    s.vm.network "private_network", ip: "192.168.50.6"
-    s.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    s.vm.provision "stage_service", type: "shell", path: ".stage/setup.sh"
+  config.vm.define "stage" do |x|
+    x.vm.hostname = "stage.lab.net"
+    x.vm.network "private_network", ip: "192.168.50.6"
+    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "stage_service", type: "shell", path: ".stage/setup.sh"
   end
 
   # TFTP
-  config.vm.define "tftp" do |t|
-    t.vm.hostname = "tftp.lab.net"
-    t.vm.network "private_network", ip: "192.168.50.7"
-    t.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    t.vm.provision "tftp_service", type: "shell", path: ".tftp/setup.sh"    
+  config.vm.define "tftp" do |x|
+    x.vm.hostname = "tftp.lab.net"
+    x.vm.network "private_network", ip: "192.168.50.7"
+    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "tftp_service", type: "shell", path: ".tftp/setup.sh"    
   end
 
   # YUM
-  config.vm.define "yum" do |y|
-    y.vm.hostname = "yum.lab.net"
-    y.vm.network "private_network", ip: "192.168.50.8"
-    y.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    y.vm.provision "yum_service", type: "shell", path: ".yum/setup.sh" 
+  config.vm.define "yum" do |x|
+    x.vm.hostname = "yum.lab.net"
+    x.vm.network "private_network", ip: "192.168.50.8"
+    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "yum_service", type: "shell", path: ".yum/setup.sh" 
   end
 
 end
