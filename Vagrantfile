@@ -24,7 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "oemrepo" do |db|
     db.vm.hostname = "oemrepo.lab.net"
     db.vm.network "private_network", ip: "192.168.50.4"
-    db.vm.provision "db_service", type: "shell", path: ".oemrepo/oemrepo_setup.sh", privileged: false
+    db.vm.provision "oemrepo_setup", type: "shell", path: ".oemrepo/oemrepo_setup.sh", privileged: false
     # OMS requires that the DB have plenty of RAM for performance reasons. I'll give it 2G and see how we do!
     db.vm.provider "virtualbox" do |v|
       v.memory = 2048
@@ -44,9 +44,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.memory = 3584
     end
 
-    oms.vm.provision "oms_service", type: "shell", path: ".oms/setup.sh", privileged: false
+    oms.vm.provision "setup", type: "shell", path: ".oms/setup.sh", privileged: false
     oms.vm.provision "make_agent_pull", type: "shell", path: ".oms/make_agent_pull.sh"
-    oms.vm.provision "make_agent_rpm", type: "shell", path: ".oms/generate_agent.sh"
+    oms.vm.provision "generate_agent", type: "shell", path: ".oms/generate_agent.sh"
     oms.vm.provision "start_oms", type: "shell", inline: "service gcstartup start", run: "always"
   end
 
@@ -54,32 +54,32 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "dhcp" do |x|
     x.vm.hostname="dhcp.lab.net"
     x.vm.network "private_network", ip: "192.168.50.3"
-    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    x.vm.provision "dhcp_service", type: "shell", path: ".dhcp/setup.sh", privileged: false
+    x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "setup", type: "shell", path: ".dhcp/setup.sh", privileged: false
   end
 
   # STAGE
   config.vm.define "stage" do |x|
     x.vm.hostname = "stage.lab.net"
     x.vm.network "private_network", ip: "192.168.50.6"
-    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    x.vm.provision "stage_service", type: "shell", path: ".stage/setup.sh"
+    x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "setup", type: "shell", path: ".stage/setup.sh"
   end
 
   # TFTP
   config.vm.define "tftp" do |x|
     x.vm.hostname = "tftp.lab.net"
     x.vm.network "private_network", ip: "192.168.50.7"
-    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    x.vm.provision "tftp_service", type: "shell", path: ".tftp/setup.sh"    
+    x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "setup", type: "shell", path: ".tftp/setup.sh"    
   end
 
   # YUM
   config.vm.define "yum" do |x|
     x.vm.hostname = "yum.lab.net"
     x.vm.network "private_network", ip: "192.168.50.8"
-    x.vm.provision "managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
-    x.vm.provision "yum_service", type: "shell", path: ".yum/setup.sh" 
+    x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
+    x.vm.provision "setup", type: "shell", path: ".yum/setup.sh" 
   end
 
 end
