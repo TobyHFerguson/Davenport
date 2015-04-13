@@ -29,7 +29,7 @@ EOF
 }
 
 # Install the db
-sudo su -c "/vagrant/db_install/runInstaller -silent -ignorePrereq -responseFile /vagrant/.oemrepo/db.rsp -waitforcompletion" - oracle
+sudo su -c "/vagrant/db_install/database/runInstaller -silent -ignorePrereq -responseFile /vagrant/.oemrepo/db.rsp -waitforcompletion" - oracle
 
 # Execute the root scripts
 sudo /u01/app/oraInventory/orainstRoot.sh
