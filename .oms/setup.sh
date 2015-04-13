@@ -54,10 +54,16 @@ EOF' - root
 sudo sed -i '/127.0.0.1/s/oms.lab.net oms //' /etc/hosts
 
 # setup firewall so we can access the OMS remotely
-sudo iptables -L INPUT -n | grep -q 7802  || {
-    sudo iptables -I  INPUT -m state --state NEW -p tcp --dport 7802 -j ACCEPT
-    sudo service iptables save
-    }
+# sudo iptables -L INPUT -n | grep -q 7802  || {
+#     sudo iptables -I  INPUT -m state --state NEW -p tcp --dport 7802 -j ACCEPT
+#     sudo service iptables save
+#     }
+
+# Turn off security until I can figure out which ports are required
+sudo service iptables stop
+sudo chkconfig iptables off
+sudo sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
+sudo setenforce 0
 
 # Check that the oms_install directory exists. Exit if it doesn't
 [ -d /vagrant/oms_install ] || {
@@ -97,9 +103,6 @@ sudo su -c 'emcli set_default_pref_cred -set_name="HostCredsNormal" -target_type
 sudo su -c 'emcli set_default_pref_cred -set_name="HostCredsPriv" -target_type=host -credential_name=ROOT_NC'  - oracle
 sudo su -c 'emcli set_default_pref_cred -set_name="HostCreds" -target_type=oracle_emd -credential_name=ORACLE_NC'  - oracle 
 
-# Turn off security until I can figure out which ports are required
-sudo service iptables stop
-sudo chkconfig iptables off
 
 # Ensure that the dhcp server is used for dns
 sudo su -c 'echo "prepend domain-name-servers 192.168.50.3;" >/etc/dhcp/dhcpclient.conf'
