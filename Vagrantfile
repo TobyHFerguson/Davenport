@@ -55,6 +55,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.hostname="dhcp.lab.net"
     x.vm.network "private_network", ip: "192.168.50.3"
     x.vm.provision "agent_packages", type: "shell", path: ".common/install_agent_prereq_packages.sh"
+    x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".dhcp/setup.sh", privileged: false
   end
@@ -64,6 +65,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.hostname = "stage.lab.net"
     x.vm.network "private_network", ip: "192.168.50.6"
     x.vm.provision "agent_packages", type: "shell", path: ".common/install_agent_prereq_packages.sh"
+    x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".stage/setup.sh"
   end
@@ -73,6 +75,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.hostname = "tftp.lab.net"
     x.vm.network "private_network", ip: "192.168.50.7"
     x.vm.provision "agent_packages", type: "shell", path: ".common/install_agent_prereq_packages.sh"
+    x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".tftp/setup.sh"    
   end
@@ -82,6 +85,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.hostname = "yum.lab.net"
     x.vm.network "private_network", ip: "192.168.50.8"
     x.vm.provision "agent_packages", type: "shell", path: ".common/install_agent_prereq_packages.sh"
+    x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".yum/setup.sh" 
   end

@@ -20,26 +20,29 @@ packages+=(openssh-clients)
 
 rpm --quiet -q ${packages[*]} || sudo yum -q -y install ${packages[*]}
 
-# configure oracle user
-sudo useradd -U -m oracle
+
+# configure oracle user as per http://docs.oracle.com/cd/E24628_01/install.121/e22624/preinstall_req_os_grps_usrs.htm#EMBSC142
+groupadd oinstall
+useradd -g oinstall oracle
+echo oracle | passwd --stdin oracle
 echo oracle | sudo passwd --stdin oracle
 # configure oracle user's sudo access
 sudo install --mode 440 --owner root --group root /vagrant/.oms/sudo_oracle /etc/sudoers.d
 # configure sudo so that it can be used by Enterprise Manager
 sudo sed -i -e '/requiretty$/s/^/#/' -e'/visiblepw$/s/!//'  /etc/sudoers
 # Create the oracle software directory
-sudo install -o oracle -g oracle -d /u01
+sudo install -o oracle -g oinstall -d /u01
 # Configure oracle user for ssh access
 sudo cp --recursive ~vagrant/.ssh ~oracle
-sudo chown --recursive oracle:oracle ~oracle
+sudo chown --recursive oracle:oinstall ~oracle
 # Configure oracle's environment
 sudo su -c 'cat /vagrant/.oms/oracle_profile  >>/home/oracle/.bash_profile' - oracle
 
 # Create the directories in which the oms and the agent are to be installed.
 sudo su -c "mkdir -p /u01/app/oracle/product/12cr4/Middleware" - oracle
 sudo su -c "mkdir -p /u01/app/oracle/agent12cr4" - oracle
-sudo install -o oracle -g oracle -d /u01/app/oracle/swlib
-sudo chown --recursive oracle:oracle /u01
+sudo install -o oracle -g oinstall -d /u01/app/oracle/swlib
+sudo chown --recursive oracle:oinstall /u01
 
 # Change File Descriptor limits (both hard and soft) to 16384 for oracle user. Needed by WebLogic
 # as per http://docs.oracle.com/cd/E24628_01/install.121/e22624/install_em_exist_db.htm#EMBSC162
