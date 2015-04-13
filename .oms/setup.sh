@@ -93,4 +93,4 @@ sudo service iptables stop
 sudo chkconfig iptables off
 
 # Ensure that the dhcp server is used for dns
-sudo echo 'prepend domain-name-servers 192.168.50.3;' >/etc/dhcp/dhcpclient.conf
+sudo su -c 'echo "prepend domain-name-servers 192.168.50.3;" >/etc/dhcp/dhcpclient.conf'
