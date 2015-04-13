@@ -6,3 +6,6 @@
 /ol6.iso
 /oms_install/
 /typescript
+/agentpull.sh
+/get_agentimage*log
+/oem_setupinfo.txt
