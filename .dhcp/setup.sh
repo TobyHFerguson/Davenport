@@ -10,6 +10,7 @@ sudo cp -f /vagrant/.dhcp/dnsmasq.conf /etc/dnsmasq.conf
 # It looks like hostmanager will keep breaking the SELINUX context of /etc/hosts
 # so, for now, simply turn off SELINUX
 sudo sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/sysconfig/selinux
+sudo setenforce 0
 
 # Take care of dnsmasq as a service
 sudo chkconfig dnsmasq on
