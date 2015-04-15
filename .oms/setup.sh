@@ -22,9 +22,8 @@ rpm --quiet -q ${packages[*]} || sudo yum -q -y install ${packages[*]}
 
 
 # configure oracle user as per http://docs.oracle.com/cd/E24628_01/install.121/e22624/preinstall_req_os_grps_usrs.htm#EMBSC142
-groupadd oinstall
-useradd -g oinstall oracle
-echo oracle | passwd --stdin oracle
+sudo groupadd oinstall
+sudo useradd -g oinstall oracle
 echo oracle | sudo passwd --stdin oracle
 # configure oracle user's sudo access
 sudo install --mode 440 --owner root --group root /vagrant/.oms/sudo_oracle /etc/sudoers.d
