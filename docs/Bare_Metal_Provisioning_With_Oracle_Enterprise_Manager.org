@@ -294,7 +294,7 @@ vboxmanage startvm BMP
 #+END_SRC
 You should see the VM go through a PXE boot and then start installing the OS according to the specifications laid out in the Operating System and Disk Layout components
 ** Re-provisioning
-If you wish to go through the PXE boot process again then you need to do three things:
+If you wish to go through the PXE boot process again then you need to do two things:
 + Delete the BMP server and agent from Enterprise Manager
 + Replace the BMP server's system disk and reboot
 
