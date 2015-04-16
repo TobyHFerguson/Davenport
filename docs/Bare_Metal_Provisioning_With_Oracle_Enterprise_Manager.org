@@ -249,7 +249,9 @@ At this point it is good to perform a snapshot. This snapshot provides a recover
 #+BEGIN_SRC sh
 vagrant halt
 vagrant snap take --name 'Setup Complete'
+vagrant up
 #+END_SRC
+
 * Demo Operation
 Navigate to the Bare Metal Provisioning wizard (Enterprise -> Provisioning and Patching -> Bare Metal Provisioning) and ensure the 'Deployments' tab is selected.
 ** Create the server to be provisioned
@@ -293,44 +295,18 @@ vboxmanage startvm BMP
 You should see the VM go through a PXE boot and then start installing the OS according to the specifications laid out in the Operating System and Disk Layout components
 ** Re-provisioning
 If you wish to go through the PXE boot process again then you need to do two things:
-*** Delete the BMP server from Enterprise Manager
-Select the menu option 'Targets -> All targets' to list all the targets:
-#+CAPTION: Selecting All Targets menu option:
-[[./images/all_targets.png]]
-#+LATEX: \clearpage
-Select the =bmp.lab.net:3872' link:
-#+CAPTION: Selecting the 'bmp.lab.net:3872' link
-[[./images/bmp_link.png]]
-#+LATEX: \clearpage
-This will take you to the bmp agent page:
-#+CAPTION: BMP Agent
-[[./images/bmp_agent.png]]
-#+LATEX: \clearpage
-Select the 'Agent -> Target Setup -> Agent Decommision' menu item to start the agent decommission process:
-#+CAPTION: Agent Decommission Menu Selection
-[[./images/agent_decomission.png]]
-#+LATEX: \clearpage
-This will popup a confirmation:
-#+CAPTION: Agent Decommission Agent Down Confirmation
-[[./images/agent_decommission_popup.png]]
-#+LATEX: \clearpage
-Ignore the content of this popup and Press 'Continue' (because we're going to completely remove the host and the agent we don't need to stop the agent as requested by the popup). That'll take us to a list of monitored targets:
-#+CAPTION: Agent Decommision Targets List
-[[./images/agent_decommission_targets.png]]
-#+LATEX: \clearpage
-Hit 'Continue' in the top right corner. This will take you to a confirmation popup:
-#+CAPTION: Agent Decommission Target Delete Confirmation
-[[./images/agent_decommission_confirmation_popup.png]]
-Accept the popup and you'll return to the 'All Targets' screen, with the =bmp= and =bmp:3872= links deleted:
-#+CAPTION: All Targets After Deleting BMP Agent
-[[./images/all_targets_no_bmp.png]]
-#+LATEX: \clearpage
-*** Swap the disks and reboot the BMP server
-This can be done via the VirtualBox GUI:
-- stop the server
-- remove the disk from the server
-- remove and delete the disk from the media manager's list of disks (and thus the underlying file systems)
-- add a new disk to the server
-- reboot the server
++ Delete the BMP server and agent from Enterprise Manager
++ Replace the BMP server's system disk and reboot
 
-Alternatively simply use the =rebootBMP.sh= to perform this operation.
+These actions can be accomplished by simply running =createBMP= a second time - the script will detect that a BMP server already exists and will execute the above actions.
+#+BEGIN_SRC sh
+[toby@dell-server-2 Davenport]$ ./createBMP.sh 
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+Disk image created. UUID: 088418eb-7564-4249-82e4-ccebaa7fc1ff
+Target "bmp.lab.net:3872:oracle_emd" deleted successfully
+Connection to 127.0.0.1 closed.
+Waiting for VM "BMP" to power on...
+VM "BMP" has been successfully started.
+#+END_SRC
