@@ -310,8 +310,3 @@ Connection to 127.0.0.1 closed.
 Waiting for VM "BMP" to power on...
 VM "BMP" has been successfully started.
 #+END_SRC
-
-
-
-
-
