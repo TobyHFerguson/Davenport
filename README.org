@@ -19,9 +19,11 @@ Download and install the latest version of VirtualBox (http://Virtualbox.org). I
 Install Vagrant (https://www.vagrantup.com/downloads.html)
 You need to install Vagrant and VirtualBox on your host machine.
 
-The base box used is =ol6u5-minimal-btrfs-uek.box=. You can install this in Vagrant by hand thus:
+The base box used is =ol6u5-minimal-btrfs-uek.box=. 
+
+/OPTIONAL:/ You can install this in Vagrant by hand thus:
 #+BEGIN_SRC sh
-vagrant box add http://tobyhferguson.org/ol6u5-minimal-btrfs-uek.box --name ol6u5-minimal-btrfs-uek
+vagrant box add http://tobyhferguson.org/boxes/ol6u5-minimal-btrfs-uek.box --name ol6u5-minimal-btrfs-uek
 #+END_SRC
 although the first =vagrant up= you execute will also add that box if its not already been added.
 
