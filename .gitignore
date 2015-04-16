@@ -10,3 +10,4 @@
 /get_agentimage*log
 /oem_setupinfo.txt
 /oracle-agt-12.1.0.4.0-1.0.x86_64.rpm
+/.dhcp/dhcp-hostsfile
