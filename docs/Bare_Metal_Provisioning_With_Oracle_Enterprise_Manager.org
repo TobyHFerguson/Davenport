@@ -249,7 +249,9 @@ At this point it is good to perform a snapshot. This snapshot provides a recover
 #+BEGIN_SRC sh
 vagrant halt
 vagrant snap take --name 'Setup Complete'
+vagrant up
 #+END_SRC
+
 * Demo Operation
 Navigate to the Bare Metal Provisioning wizard (Enterprise -> Provisioning and Patching -> Bare Metal Provisioning) and ensure the 'Deployments' tab is selected.
 ** Create the server to be provisioned
@@ -293,6 +295,11 @@ vboxmanage startvm BMP
 You should see the VM go through a PXE boot and then start installing the OS according to the specifications laid out in the Operating System and Disk Layout components
 ** Re-provisioning
 If you wish to go through the PXE boot process again then you need to do two things:
++ Delete the BMP server and agent from Enterprise Manager
++ Replace the BMP server's system disk and reboot
+Both of these actions can be accomplished by simply running =createBMP= a second time - the script will detect that a BMP server already exists and will execute the above actions.
+
+However, should you wish to execute these tasks manually, the following section describes how to do it:
 *** Delete the BMP server from Enterprise Manager
 Select the menu option 'Targets -> All targets' to list all the targets:
 #+CAPTION: Selecting All Targets menu option:
