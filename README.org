@@ -1,34 +1,43 @@
 #+TITLE: Project Davenport
 #+STARTUP: showall nohideblocks
 * Overview
-This project provides a 'one button' installation of a complete virtualized environment for demonstrating Oracle Enterprise Manager 12c's Bare Metal Provisioning capability
+This project provides a 'one button' installation of a complete virtualized environment for demonstrating Oracle Enterprise Manager 12c's Bare Metal Provisioning capability. This environment comprises a network of VirtualBox guests running on a host machine. Guests are accessible via ssh from the host, and certain ports are forwarded from the guests to the host so that it is easy to use tools (such as a browser) already installed on the host to access services on a guest.
 
-The system will install Oracle Linux (you supply the iso), along with Oracle 11g Database (you download and expand the zip files), and Oracle Enterprise Manager 12C (you download and expand the zip files). The database and the Oracle Management Server are installed as separate VMs, as are a dhcp server, staging server, tftp server and yum server. 
+You need to provide the software (Oracle Linux, Oracle 11g Database, Oracle Enterprise Manager 12c) and put it in the right place; the automation will then use that and build out the entire system.
+
+The guests comprise:
++ oemrepo :: an Oracle 11g Database repository
++ oms :: The Oracle Enterprise Manager
++ dhcp :: A dhcp server for the guest's network
++ stage :: A staging server for providing Bare Metal Provisioning (BMP) kickstart files
++ tftp :: A boot server for providing PXE boot capability
++ yum :: A local yum server providing the Oracle Linux repo access during the BMP kickstart process
 
 The install process takes about 4 hours.
 
-You will then be able to access Oracle Enterprise Manager on the host machine on port 17802.
-
-The use of Oracle Enterprise Manager is explained in detail in  [[docs/Bare_Metal_Provisioning_With_Oracle_Enterprise_Manager.org][Bare Metal Provisioning with Oracle Enterprise Manager]]
-* Setup
-** Required Host Software
+You will then be able to access Oracle Enterprise Manager on the host machine on port 17802 and show Bare Metal Provisioning as described in [[docs/Bare_Metal_Provisioning_With_Oracle_Enterprise_Manager.org][Bare Metal Provisioning with Oracle Enterprise Manager]]
+** Suggested Workflow
+The Oracle Software is large and takes a long time to download. I suggest you start that download first, and then get on with everything else. Given that, the workflow is:
++ Download Oracle Software - while that is happening do everything else:
++ Setup the host hardware and software
++ Setup the project
++ Create the guests
+* Host Setup
+** Hardware Prerequisites
++ Disk :: 50G
++ RAM :: 10G and up
++ Network :: Internet required during installation
++ Processor :: At least 1!
++ Virtualization Support :: VT-X/AMD-v required
+** Software
+*** OS
 No specific OS is assumed for the host. However I've only used Oracle Linux 6 and not tested any of these instructions out using a different host.
-** Virtual Box
+*** Virtual Box
 Download and install the latest version of VirtualBox (http://Virtualbox.org). I used 4.3.18r96516 but you should be good with any younger version, and probably many older ones too!
-** Vagrant
+*** Vagrant
 Install Vagrant (https://www.vagrantup.com/downloads.html)
-You need to install Vagrant and VirtualBox on your host machine.
 
-The base box used is =ol6u5-minimal-btrfs-uek.box=. 
-
-/OPTIONAL:/ You can install this in Vagrant by hand thus:
-#+BEGIN_SRC sh
-vagrant box add http://tobyhferguson.org/boxes/ol6u5-minimal-btrfs-uek.box --name ol6u5-minimal-btrfs-uek
-#+END_SRC
-although the first =vagrant up= you execute will also add that box if its not already been added.
-
-(How to build =ol6u5-minimal-btrfs-uek.box= is described in my [[https://github.com/TobyHFerguson/Corralitos][Corralitos]] repository)
-*** Vagrant Plugins
+**** Vagrant Plugins
 Install the following vagrant plugins:
 + hostmanager :: https://github.com/smdahlen/vagrant-hostmanager
 + vbguest :: https://github.com/dotless-de/vagrant-vbguest
@@ -40,23 +49,24 @@ do
     vagrant plugin install $plugin
 done
 #+END_SRC
-** Clone Repository
-Create the base directory for the system by cloning this git repository:
+
+*** Git
+Install the latest version of git on your host.
+* Project Setup
+** Clone Davenport Repository
+Create the base directory for the system by cloning the =Davenport= repository:
 #+BEGIN_SRC sh
 git clone https://github.org/tobyhferguson/Davenport
-cd Davenport
 #+END_SRC
-
-This directory /Davenport/ will be the project's home directory. You can call it anything you like. All file references etc. will be relative to this directory. So if I say something like 'unzip the database files into the /db_install/ dir, that directory will be an immediate child directory under /Davenport/. 
+This will create a directory called =Davenport=. This directory will be the project's home directory[fn:1]. All file references etc. will be relative to this directory. So if I say something like "unzip the database files into the =db_install= directory", that directory will be an immediate child directory under =Davenport=, thus: =Davenport/db_install=. 
 
 ** Download Software
-Download four software items (each comprising one or more zip files):
-+ OL6 :: Latest version of Oracle Linux 6. Opensource and free.
+Download four software items (each comprising one or more zip files) as detailed below:
++ OL6 :: Latest version of Oracle Linux 6. Opensource and free to download, use and distribute.
 + DB :: Oracle Database 12C. Requires a license to download and use.
 + OEM :: Oracle Enterprise Manager 12C. Free to download. Use with Oracle Linux requires an Oracle Linux support contract
 + DB Template :: Oracle template for OEM 12C. Free to download.
 
-Detailed instructions are contained below:
 *** OL6
 Download any (we recommend the latest) version of Oracle Linux 6 from https://edelivery.oracle.com. We used Oracle Linux 6 Update 5:
 | Name                                                | Part #    |
@@ -77,7 +87,7 @@ unzip -u -d db_install /Download/p10404530_112030_Linux-x86-64_1of7.zip
 unzip -u -d db_install /Download/p10404530_112030_Linux-x86-64_2of7.zip
 #+END_SRC
 *** Enterprise Manager
-Download Enterprise Manager 12C Release 4 from https://edelivery.oracle.com. You'll need the three parts, as listed below, each part will download as a zip file named after its part number:
+Download Enterprise Manager 12C Release 4 from https://edelivery.oracle.com. You'll need all three parts, as listed below; each part will download as a zip file named after its part number:
 
 | Description                                                                                 | Part #    |
 |---------------------------------------------------------------------------------------------+-----------|
@@ -108,9 +118,9 @@ drwxr-xr-x. 11 toby toby       4096 Dec 17 10:13 oms_install
 -rw-rw-r--.  1 toby toby       3740 Dec 29 11:05 Vagrantfile
 #+END_SRC
 (There're a bunch of hidden directories too, but they're for "internal" use, so I haven't shown those here)
-* Operation
+* Creating the Guests
+With everything performed above (host hardware checked; host software installed; project and its software downloaded and ready) then creating the guests is fully automated:
 ** Initial provision
-Assuming vagrant is set up correctly then simply do the following:
 #+BEGIN_SRC sh
 cd Davenport
 vagrant up
@@ -128,6 +138,12 @@ All these VMs are "standard" vagrant VMs - the =root= and =vagrant= users have t
 The =dhcp=, =stage=, =tftp= & =yum= servers are all managed by the OMS, and so have agents running on them.
 
 This process takes of the order of 2 to 3 hours (with the bulk of that time being the OMS installation). 
+
+Once created each of these guests can be accessed via ssh from the =Davenport= directory by simply executing =vagrant ssh <guestname>= (e.g. =vagrant ssh oms=). 
+
+All of the guests have two adapters, attached thus:
++ Adapter 1 :: eth0, attached to NAT, through which ssh and other access is possible from the host
++ Adpater 2 :: eth1, attached to Host Only Network, for communicating with other guests
 ** Post provisioning
 Once the provisioning has completed then halt all the machines and snapshot them, thus:
 #+BEGIN_SRC sh
@@ -138,6 +154,13 @@ This will provide you a snapshot (called /Post_Provision/) for all of the machin
 
 We will use snapshots at other points to ensure we don't lose our work.
 
-The file =oem_setupinfo.txt= contains information about how to communicate with Oracle Enterprise Manager. Note that these URLS will only work from your host machine, because that's where the =/etc/hosts= file was modified to resolve the hostnames. Port 7802 from the =oms= server has been forwarded to port 17802 on the host. Normally we will connect remotely to an url of the form =https://HOST:17802/em= where =HOST= will be the address (hostname or ipaddress) of the host machine.
+During creation and installation of the =oms= host a file, =oem_setupinfo.txt= will be created that contains information about how to communicate with Oracle Enterprise Manager. Note that the URLS contained in that document are only valid /within/ the host only network that the guests' Adpater 2 is attached to. 
+
+To make it easy to use a browser on the host or your own machine (if the host is remote) we've forwarded port 7802 from the =oms= guest to port =17802= on the host. Once the =oms= is up and running you can access the OEM GUI using an url of the form  =https://HOST:17802/em= where =HOST= will be the address (hostname or ipaddress) of the host machine.
 * Bare Metal Provisioning (BMP) Process
 The BMP process is documented in the [[docs/Bare_Metal_Provisioning_With_Oracle_Enterprise_Manager.org][Bare Metal Provisioning with Oracle Enterprise Manager]] file
+
+* Footnotes
+
+[fn:1] The name of this directory is not important, but for ease of explanation I shall refer to it as =Davenport= or the /project's home directory/
+
