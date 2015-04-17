@@ -6,12 +6,14 @@ This project provides a 'one button' installation of a complete virtualized envi
 You need to provide the software (Oracle Linux, Oracle 11g Database, Oracle Enterprise Manager 12c) and put it in the right place; the automation will then use that and build out the entire system.
 
 The guests comprise:
-| oemrepo | an Oracle 11g Database repository|
-| oms | The Oracle Enterprise Manager|
-| dhcp | A dhcp server for the guest's network|
-| stage | A staging server for providing Bare Metal Provisioning (BMP) kickstart files|
-| tftp | A boot server for providing PXE boot capability|
-| yum | A local yum server providing the Oracle Linux repo access during the BMP kickstart process|
+| Guest name | Purpose                                                                                  |
+|------------+------------------------------------------------------------------------------------------|
+| oemrepo    | Repository (database) for the Oracle Enterprise Manager                                  |
+| oms        | Oracle Management Server, hosting Oracle Enterprise Manager                              |
+| dhcp       | The dhcp service                                                                         |
+| stage      | Staging service for Bare Metal Provisioning (BMP) by the OMS. Holds kickstart files etc. |
+| tftp       | Boot server for BMP. Provides PXE linux boot services.                                   |
+| yum        | Yum server for BMP. Provides a yum repository containing Oracle Linux 6.                 |
 
 The install process takes about 4 hours.
 
@@ -64,7 +66,7 @@ This will create a directory called =Davenport=. This directory will be the proj
 Download four software items (each comprising one or more zip files) as detailed below:
 | OL6 | Latest version of Oracle Linux 6. Opensource and free to download, use and distribute.|
 | DB | Oracle Database 12C. Requires a license to download and use.|
-| OEM | Oracle Enterprise Manager 12C. Free to download. Use with Oracle Linux requires an Oracle Linux| support contract
+| OEM | Oracle Enterprise Manager 12C. Free to download. Use with Oracle Linux requires an Oracle Linux support contract |
 | DB Template | Oracle template for OEM 12C. Free to download.|
 
 *** OL6
@@ -126,12 +128,14 @@ cd Davenport
 vagrant up
 #+END_SRC
 Vagrant will do its magic along with Virtualbox and setup the basic VMs. It will use the contents of the /Vagrantfile/ and the referenced scripts (in those hidden directories mentioned above) to provision each of the VMs with its respective service:
-| oemrepo | Repository (database) for the Oracle Enterprise Manager|
-| oms | Oracle Management Server, hosting Oracle Enterprise Manager|
-| dhcp | The dhcp service|
-| stage | Staging service for Bare Metal Provisioning (BMP) by the OMS. Holds kickstart files etc.|
-| tftp | Boot server for BMP. Provides PXE linux boot services.|
-| yum | Yum server for BMP. Provides a yum repository containing Oracle Linux 6.|
+| Guest name | Purpose                                                                                  |
+|------------+------------------------------------------------------------------------------------------|
+| oemrepo    | Repository (database) for the Oracle Enterprise Manager                                  |
+| oms        | Oracle Management Server, hosting Oracle Enterprise Manager                              |
+| dhcp       | The dhcp service                                                                         |
+| stage      | Staging service for Bare Metal Provisioning (BMP) by the OMS. Holds kickstart files etc. |
+| tftp       | Boot server for BMP. Provides PXE linux boot services.                                   |
+| yum        | Yum server for BMP. Provides a yum repository containing Oracle Linux 6.                 |
 
 All these VMs are "standard" vagrant VMs - the =root= and =vagrant= users have the password 'vagrant'. There is also an 'oracle' user, whose password is 'oracle'. The project directory (=Davenport=) is mounted inside each VM at =/vagrant=. 
 
@@ -142,8 +146,10 @@ This process takes of the order of 2 to 3 hours (with the bulk of that time bein
 Once created each of these guests can be accessed via ssh from the =Davenport= directory by simply executing =vagrant ssh <guestname>= (e.g. =vagrant ssh oms=). 
 
 All of the guests have two adapters, attached thus:
-| Adapter 1 | eth0, attached to NAT, through which ssh and other access is possible from the host|
-| Adpater 2 | eth1, attached to Host Only Network, for communicating with other guests|
+| Adapter | Eth port | Network                                                           |
+|---------+----------+-------------------------------------------------------------------|
+|       1 | eth0     | NAT, through which ssh and other access is possible from the host |
+|       2 | eth1     | Host Only Network, for communicating with other guests            |
 ** Post provisioning
 Once the provisioning has completed then halt all the machines and snapshot them, thus:
 #+BEGIN_SRC sh
