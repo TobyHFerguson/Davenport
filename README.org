@@ -9,7 +9,7 @@ The install process takes about 4 hours.
 
 You will then be able to access Oracle Enterprise Manager on the host machine on port 17802.
 
-The use of Oracle Enterprise Manager is explained in detail in the /Using OEM for Bare Metal Provisioning/ pdf file.
+The use of Oracle Enterprise Manager is explained in detail in  [[docs/Bare_Metal_Provisioning_With_Oracle_Enterprise_Manager.org][Bare Metal Provisioning with Oracle Enterprise Manager]]
 * Setup
 ** Required Host Software
 No specific OS is assumed for the host. However I've only used Oracle Linux 6 and not tested any of these instructions out using a different host.
