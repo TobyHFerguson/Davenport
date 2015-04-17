@@ -24,6 +24,14 @@ The Oracle Software is large and takes a long time to download. I suggest you st
 + Setup the host hardware and software
 + Setup the project
 + Create the guests
+** Notes for Small Ram (<16G) hosts
+If your host is small then use the following technique to install quickly, but run in less space: Modify your guest creation thus:
++ Create the =oemrepo= and =oms= guests first, by executing =vagrant up oemprepo oms=
++ Create, provision and stop each of the infrastructure guests separately thus:
+#+BEGIN_SRC 
+for guest in dhcp stage tftp yum; do vagrant up $guest; vagrant halt $guest; done
+#+END_SRC
++ Modify the =Vagrantfile= so that the runtime RAM used by these four guests is small enough for the total to fit on your host. The value you want to change is the =RAM= setting; the RAM size MB which infrastructure guests will use. Then simply execute =vagrant up= and everything will be running at these new RAM settings.
 * Host Setup
 ** Hardware Prerequisites
 | Disk | 50G|

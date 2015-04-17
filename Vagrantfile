@@ -3,6 +3,7 @@
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
+RAM = "1024"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # ##########
@@ -58,6 +59,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".dhcp/setup.sh", privileged: false
+    # Make the RAM size small in VirtualBox
+    x.vm.provider "virtualbox" do |v|
+      v.memory = "#{RAM}"
+    end  
   end
 
   # STAGE
@@ -68,6 +73,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".stage/setup.sh"
+    # Make the RAM size small in VirtualBox
+    x.vm.provider "virtualbox" do |v|
+      v.memory = "#{RAM}"
+    end  
   end
 
   # TFTP
@@ -78,6 +87,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".tftp/setup.sh"    
+    # Make the RAM size small in VirtualBox
+    x.vm.provider "virtualbox" do |v|
+      v.memory = "#{RAM}"
+    end  
   end
 
   # YUM
@@ -88,6 +101,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     x.vm.provision "provision_oracle_user", type: "shell", path: ".common/provision_oracle_user.sh"
     x.vm.provision "provision_as_managed_server", type: "shell", path: ".common/provision_as_managed_server.sh"
     x.vm.provision "setup", type: "shell", path: ".yum/setup.sh" 
+    # Make the RAM size small in VirtualBox
+    x.vm.provider "virtualbox" do |v|
+      v.memory = "#{RAM}"
+    end  
   end
 
 end
