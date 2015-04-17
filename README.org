@@ -139,3 +139,5 @@ This will provide you a snapshot (called /Post_Provision/) for all of the machin
 We will use snapshots at other points to ensure we don't lose our work.
 
 The file =oem_setupinfo.txt= contains information about how to communicate with Oracle Enterprise Manager. Note that these URLS will only work from your host machine, because that's where the =/etc/hosts= file was modified to resolve the hostnames. Port 7802 from the =oms= server has been forwarded to port 17802 on the host. Normally we will connect remotely to an url of the form =https://HOST:17802/em= where =HOST= will be the address (hostname or ipaddress) of the host machine.
+* Bare Metal Provisioning (BMP) Process
+The BMP process is documented in the [[docs/Bare_Metal_Provisioning_With_Oracle_Enterprise_Manager.org][Bare Metal Provisioning with Oracle Enterprise Manager]] file
